@@ -7,7 +7,14 @@ import re
 from config import BOT_TOKEN
 from telebot import TeleBot, custom_filters, types
 from telebot.custom_filters import SimpleCustomFilter
-from commands.command import bot_configuration, auto_trading, optimised_config, portfolio, _start#, trading_start, _start
+from commands.command import (
+    bot_configuration,
+    auto_trading_filters,
+    optimised_config,
+    portfolio,
+    _start,
+    max_trade,
+    )
 from telebot.storage import StateMemoryStorage
 from telebot.handler_backends import State, StatesGroup
 import logging
@@ -38,7 +45,7 @@ def trading_start(message):
     btn1 = types.InlineKeyboardButton(text=config.PORTFOLIO_BTN, callback_data=config.PORTFOLIO_BTN)
     btn2 = types.InlineKeyboardButton(text=config.OPTIMIZED_CONFIG_BTN, callback_data=config.OPTIMIZED_CONFIG_BTN)
     btn3 = types.InlineKeyboardButton(text=config.BOT_CONFIG_BTN, callback_data= config.BOT_CONFIG_BTN)
-    btn4 = types.InlineKeyboardButton(text=config.AUTO_TRADING_BTN, callback_data=config.AUTO_TRADING_BTN)
+    btn4 = types.InlineKeyboardButton(text=config.AUTO_TRADING_FILTERS, callback_data=config.AUTO_TRADING_FILTERS)
     # btn3 = types.InlineKeyboardButton(text='❓ كيفيه التحويل لمحفظه اخرى?', url='https://youtu.be/AcCgcKrABms')
     # btn4 = types.InlineKeyboardButton(text='♦️ Admin', url='tg://user?id={}'.format(admin_id))
     markup.add(btn1, btn2)
@@ -77,9 +84,10 @@ bot.register_message_handler(trading_start, commands=['start'])
 bot.register_callback_query_handler(_start, pass_bot=True, func=lambda message: message.data == config.MAIN_MENU)
 # bot.register_message_handler(callback=trading_start, pass_bot=True, commands=['start'], chat_types=['private'], is_on=True)
 bot.register_callback_query_handler(bot_configuration, pass_bot=True,  func=lambda message: message.data == config.BOT_CONFIG_BTN)
-bot.register_callback_query_handler(auto_trading, pass_bot=True,  func=lambda message: message.data == config.AUTO_TRADING_BTN)
+bot.register_callback_query_handler(auto_trading_filters, pass_bot=True,  func=lambda message: message.data == config.AUTO_TRADING_FILTERS)
 bot.register_callback_query_handler(optimised_config, pass_bot=True,  func=lambda message: message.data == config.OPTIMIZED_CONFIG_BTN)
 bot.register_callback_query_handler(portfolio, pass_bot=True,  func=lambda message: message.data == config.PORTFOLIO_BTN)
+bot.register_callback_query_handler(max_trade, pass_bot=True,  func=lambda message: message.data == config.MAX_TRADE)
 # bot.register_callback_query_handler(plan1Buy, pass_bot=True, func=lambda message: message.data.startswith('myplan1'), is_on=True)
 
 

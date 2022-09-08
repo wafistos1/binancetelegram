@@ -14,7 +14,7 @@ def _start(message, bot):
         btn1 = types.InlineKeyboardButton(text=config.PORTFOLIO_BTN, callback_data=config.PORTFOLIO_BTN)
         btn2 = types.InlineKeyboardButton(text=config.OPTIMIZED_CONFIG_BTN, callback_data=config.OPTIMIZED_CONFIG_BTN)
         btn3 = types.InlineKeyboardButton(text=config.BOT_CONFIG_BTN, callback_data= config.BOT_CONFIG_BTN)
-        btn4 = types.InlineKeyboardButton(text=config.AUTO_TRADING_BTN, callback_data=config.AUTO_TRADING_BTN)
+        btn4 = types.InlineKeyboardButton(text=config.AUTO_TRADING_FILTERS, callback_data=config.AUTO_TRADING_FILTERS)
         # btn3 = types.InlineKeyboardButton(text='❓ كيفيه التحويل لمحفظه اخرى?', url='https://youtu.be/AcCgcKrABms')
         # btn4 = types.InlineKeyboardButton(text='♦️ Admin', url='tg://user?id={}'.format(admin_id))
         markup.add(btn1, btn2)
@@ -57,13 +57,13 @@ def _start(message, bot):
 def bot_configuration(message: types.CallbackQuery, bot : TeleBot): #Todo Done
     print('Bot config.')
     markup = types.InlineKeyboardMarkup()
-    btn1 = types.InlineKeyboardButton(text=config.GENERAL, callback_data='myplan1')
-    btn2 = types.InlineKeyboardButton(text=config.STRATEGIES, callback_data='myplan2')
-    btn3 = types.InlineKeyboardButton(text=config.STOP, callback_data='myplan2')
-    btn4 = types.InlineKeyboardButton(text=config.AUTO_TRADING_FILTERS, callback_data='myplan2')
-    btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data='myplan2')
+    btn1 = types.InlineKeyboardButton(text=config.GENERAL, callback_data=config.GENERAL)
+    # btn2 = types.InlineKeyboardButton(text=config.STRATEGIES, callback_data=config.STRATEGIES)
+    btn3 = types.InlineKeyboardButton(text=config.STOP, callback_data=config.STOP)
+    btn4 = types.InlineKeyboardButton(text=config.AUTO_TRADING_FILTERS, callback_data=config.AUTO_TRADING_FILTERS)
+    btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.BACK)
     btn6 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU)
-    markup.add(btn1, btn2)
+    markup.add(btn1)
     markup.add(btn3, btn4)
     markup.add(btn6)
     # bot.delete_message(chat_id=message.message.chat.id,message_id=message.message.message_id)
@@ -84,14 +84,15 @@ def optimised_config(message: types.Message, bot : TeleBot):
     bot.edit_message_text(chat_id=message.from_user.id, message_id=message.message.message_id, text=config.OPTIMISED_CONFIG_START, parse_mode='HTML', reply_markup=markup)
 
 
-def auto_trading(message: types.CallbackQuery, bot : TeleBot):
+def auto_trading_filters(message: types.CallbackQuery, bot : TeleBot):
     print('auto_trading')
     markup = types.InlineKeyboardMarkup(row_width=2)
-    btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
-    btn2 = types.InlineKeyboardButton(text='ON', callback_data=config.MAIN_MENU,)
-    btn3 = types.InlineKeyboardButton(text='OFF', callback_data=config.MAIN_MENU,)
-    markup.add(btn2, btn3)
-    markup.add(btn1)
+    btn1 = types.InlineKeyboardButton(text=config.MAX_TRADE, callback_data=config.MAX_TRADE,)
+    btn2 = types.InlineKeyboardButton(text=config.BLACK_LIST_SYMBOLES, callback_data=config.BLACK_LIST_SYMBOLES,)
+    btn3 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.BOT_CONFIG_BTN,)
+    btn4 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
+    markup.add(btn1, btn2)
+    markup.add(btn4, btn3 )
     bot.edit_message_text(chat_id=message.from_user.id, message_id=message.message.message_id, text=config.AUTO_TRADING_START, parse_mode='HTML', reply_markup=markup)
 
 
@@ -101,3 +102,13 @@ def portfolio(message: types.CallbackQuery, bot : TeleBot):  #todo DONE
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     markup.add(btn1)
     bot.edit_message_text(chat_id=message.from_user.id, message_id=message.message.message_id, text=config.PORTFOLIO_START, parse_mode='HTML', reply_markup=markup)
+
+
+def max_trade (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
+    print('portfolio')
+    markup = types.InlineKeyboardMarkup()
+    btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.AUTO_TRADING_FILTERS)
+    btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
+    markup.add(btn1, btn5)
+    bot.edit_message_text(chat_id=message.from_user.id, message_id=message.message.message_id, text=config.PORTFOLIO_START, parse_mode='HTML', reply_markup=markup)
+
