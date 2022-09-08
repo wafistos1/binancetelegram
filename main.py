@@ -24,6 +24,8 @@ from commands.command import (
     amount_per_trade,
     close_trade_on_take_profit,
     first_entry_grace_percentage,
+    percentage,
+    fixed_usd_amount,
     )
 from telebot.storage import StateMemoryStorage
 from telebot.handler_backends import State, StatesGroup
@@ -97,17 +99,19 @@ bot.register_callback_query_handler(bot_configuration, pass_bot=True,  func=lamb
 bot.register_callback_query_handler(auto_trading_filters, pass_bot=True,  func=lambda message: message.data == config.AUTO_TRADING_FILTERS)
 bot.register_callback_query_handler(optimised_config, pass_bot=True,  func=lambda message: message.data == config.OPTIMIZED_CONFIG_BTN)
 bot.register_callback_query_handler(portfolio, pass_bot=True,  func=lambda message: message.data == config.PORTFOLIO_BTN)
-bot.register_callback_query_handler(max_trade, pass_bot=True,  func=lambda message: message.data == config.MAX_TRADE)
-bot.register_callback_query_handler(black_list_symboles, pass_bot=True,  func=lambda message: message.data == config.BLACK_LIST_SYMBOLES)
+bot.register_callback_query_handler(max_trade, pass_bot=True,  func=lambda message: message.data.startswith(config.MAX_TRADE))
+bot.register_callback_query_handler(black_list_symboles, pass_bot=True,  func=lambda message: message.data.startswith(config.BLACK_LIST_SYMBOLES))
 bot.register_callback_query_handler(stop, pass_bot=True,  func=lambda message: message.data == config.STOP)
 bot.register_callback_query_handler(default_stop, pass_bot=True,  func=lambda message: message.data == config.DEFAULT_STOP)
 bot.register_callback_query_handler(stop_loss_time, pass_bot=True,  func=lambda message: message.data == config.STOP_LOSS_TIME)
 bot.register_callback_query_handler(stategy, pass_bot=True,  func=lambda message: message.data == config.STRATEGIES)
-bot.register_callback_query_handler(entry_strategy, pass_bot=True,  func=lambda message: message.data == config.ENTRY_STRATEGY)
-bot.register_callback_query_handler(take_profit_strategy, pass_bot=True,  func=lambda message: message.data == config.TAKE_PROFIT_STRATEGY)
-bot.register_callback_query_handler(amount_per_trade, pass_bot=True,  func=lambda message: message.data == config.AMOUNT_PER_TRADE)
+bot.register_callback_query_handler(entry_strategy, pass_bot=True,  func=lambda message: message.data.startswith(config.ENTRY_STRATEGY))
+bot.register_callback_query_handler(take_profit_strategy, pass_bot=True,  func=lambda message: message.data.startswith(config.TAKE_PROFIT_STRATEGY))
+bot.register_callback_query_handler(amount_per_trade, pass_bot=True,  func=lambda message: message.data.startswith(config.AMOUNT_PER_TRADE))
 bot.register_callback_query_handler(close_trade_on_take_profit, pass_bot=True,  func=lambda message: message.data == config.CLOSE_TRADE_ON_TAKE_PROFIT)
-bot.register_callback_query_handler(first_entry_grace_percentage, pass_bot=True,  func=lambda message: message.data == config.FIRST_ENTRY_GRACE_PERCENTAGE)
+bot.register_callback_query_handler(first_entry_grace_percentage, pass_bot=True,  func=lambda message: message.data.startswith(config.FIRST_ENTRY_GRACE_PERCENTAGE))
+bot.register_callback_query_handler(percentage, pass_bot=True,  func=lambda message: message.data.startswith(config.PERCENTAGE))
+bot.register_callback_query_handler(fixed_usd_amount, pass_bot=True,  func=lambda message: message.data.startswith(config.FIXED_USD_AMOUNT))
 # bot.register_callback_query_handler(plan1Buy, pass_bot=True, func=lambda message: message.data.startswith('myplan1'), is_on=True)
 
 

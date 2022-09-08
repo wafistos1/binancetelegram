@@ -1,4 +1,6 @@
 from telebot import TeleBot, types
+from database.create_model import select_table
+from database.create_model import Percentage, AmountTrade, FixedUsdAmount
 
 import config
 import logging
@@ -263,7 +265,7 @@ def take_profit_strategy (message: types.CallbackQuery, bot : TeleBot):  #todo D
 
  
 def amount_per_trade (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
-    print('amount_per_trade')
+    print('amount_per_trade', message.data)
     markup = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton(text=config.PERCENTAGE, callback_data=config.PERCENTAGE)
     btn2 = types.InlineKeyboardButton(text=config.FIXED_USD_AMOUNT, callback_data=config.FIXED_USD_AMOUNT)
@@ -306,22 +308,33 @@ def first_entry_grace_percentage (message: types.CallbackQuery, bot : TeleBot): 
 
 
 def percentage(message: types.CallbackQuery, bot : TeleBot):  #todo DONE
-    print('percentage')
+    
+    table_numbers = select_table(Percentage)
+    print('Table: ', table_numbers)
     markup = types.InlineKeyboardMarkup()
-    btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.STRATEGIES)
+    for t in table_numbers:
+        btnt = types.InlineKeyboardButton(text=t+'%', callback_data=f'{config.AMOUNT_PER_TRADE}-{t}')
+        markup.add(btnt)
+    btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.AMOUNT_PER_TRADE)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     markup.add(btn1, btn5)
     bot.edit_message_text(chat_id=message.from_user.id,
                           message_id=message.message.message_id,
                           text=config.PERCENTAGE_START,
                           parse_mode='HTML', reply_markup=markup
-                          )
+                        )
 
 
 def fixed_usd_amount(message: types.CallbackQuery, bot : TeleBot):  #todo DONE
     print('fixed_usd_amount')
+    
+    table_numbers = select_table(FixedUsdAmount)
+    print('Table: ', table_numbers)
     markup = types.InlineKeyboardMarkup()
-    btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.STRATEGIES)
+    for t in table_numbers:
+        btnt = types.InlineKeyboardButton(text=t, callback_data=f'{config.AMOUNT_PER_TRADE}-{t}')
+        markup.add(btnt)
+    btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.AMOUNT_PER_TRADE)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     markup.add(btn1, btn5)
     bot.edit_message_text(chat_id=message.from_user.id,
