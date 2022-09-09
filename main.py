@@ -104,7 +104,7 @@ bot.register_callback_query_handler(black_list_symboles, pass_bot=True,  func=la
 bot.register_callback_query_handler(stop, pass_bot=True,  func=lambda message: message.data == config.STOP)
 bot.register_callback_query_handler(default_stop, pass_bot=True,  func=lambda message: message.data == config.DEFAULT_STOP)
 bot.register_callback_query_handler(stop_loss_time, pass_bot=True,  func=lambda message: message.data == config.STOP_LOSS_TIME)
-bot.register_callback_query_handler(stategy, pass_bot=True,  func=lambda message: message.data == config.STRATEGIES)
+bot.register_callback_query_handler(stategy, pass_bot=True,  func=lambda message: message.data.startswith(config.STRATEGIES))
 bot.register_callback_query_handler(entry_strategy, pass_bot=True,  func=lambda message: message.data.startswith(config.ENTRY_STRATEGY))
 bot.register_callback_query_handler(take_profit_strategy, pass_bot=True,  func=lambda message: message.data.startswith(config.TAKE_PROFIT_STRATEGY))
 bot.register_callback_query_handler(amount_per_trade, pass_bot=True,  func=lambda message: message.data.startswith(config.AMOUNT_PER_TRADE))

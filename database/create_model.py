@@ -21,6 +21,7 @@ class FixedUsdAmount(Base):
     id = Column(Integer, primary_key=True)
     number = Column(String(50))
 
+
 class Percentage(Base):
     __tablename__= 'percentage'
     id = Column(Integer, primary_key=True)
@@ -43,21 +44,40 @@ class FristEntry(Base):
 class EntryStrategy(Base):
     __tablename__ = 'entry_strategy'
     id = Column(Integer, primary_key=True)
-    number = Column(Integer)
+    name = Column(String(30))
 
+class CloseTradeOnTakeProfit(Base):
+    __tablename__ = 'close_trade_on_take_profit'
+    id = Column(Integer, primary_key=True)
+    onoff = Column(Boolean)
 
-class NumberTarget(Base):
-    __tablename__ = 'number_target'
+class BlacklistSymbols(Base):
+    __tablename__ = 'blacklist_symbols'
     id = Column(Integer, primary_key=True)
     number = Column(Integer)
 
+class MaxTrades(Base):
+    __tablename__ = 'max_trades'
+    id = Column(Integer, primary_key=True)
+    number = Column(Integer)
 
+class StopLossTimeout(Base):
+    __tablename__ = 'stop_loss_timeout'
+    id = Column(Integer, primary_key=True)
+    number = Column(Integer)
+
+class DefaultStopLoss(Base):
+    __tablename__ = 'default_stop_loss'
+    id = Column(Integer, primary_key=True)
+    number = Column(Integer)
+    
 class Owner(Base):
     __tablename__ = 'owner'
     
     id = Column(Integer, primary_key=True)
     channel_id = Column(String(200))
     bot_token =  Column(String(200))
+
 
 # Class of final users
 class Users(Base):
@@ -66,8 +86,8 @@ class Users(Base):
     id = Column(Integer, primary_key=True)
     channel_id = Column(String(200))
     owner_id =  Column(Integer, ForeignKey("owner.id"), nullable=False)
-    
-    
+
+
 # Class binance
 class Binance(Base):
     __tablename__ = 'binance'
@@ -91,7 +111,8 @@ class Strategy_user(Base):
     number_target_id = Column(Integer, ForeignKey('number_target.id'), nullable=False)
     owner_id = Column(Integer, ForeignKey("owner.id"), nullable=False)
     user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
-    
+
+
 class Strategy_owner(Base):
     __tablename__ = 'strategy_owner'
     
@@ -144,7 +165,11 @@ def main():
 def select_table(tablename):
     session = Session(engine)
     search_owner = select(tablename)
-    return [owner.number for owner in session.scalars(search_owner)]
+    try:
+        return [owner.number for owner in session.scalars(search_owner)]
+    except:
+        return [owner.name for owner in session.scalars(search_owner)]
+        
     
 if __name__ in '__main__':
     main()

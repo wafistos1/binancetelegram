@@ -13,15 +13,15 @@ def main():
     orders = client.get_all_orders(symbol='BNBBTC', limit=10)
     
     # Place on order
-    # print(orders)
-    order = client.create_order(
-        symbol='BNBBTC',
-        side=SIDE_BUY,
-        type=ORDER_TYPE_LIMIT,
-        timeInForce=TIME_IN_FORCE_GTC,
-        quantity=100,
-        price='0.00001'
-        )
+    print(orders)
+    # order = client.create_order(
+    #     symbol='BNBBTC',
+    #     side=SIDE_BUY,
+    #     type=ORDER_TYPE_LIMIT,
+    #     timeInForce=TIME_IN_FORCE_GTC,
+    #     quantity=100,
+    #     price='0.00001'
+    #     )
 
 
 

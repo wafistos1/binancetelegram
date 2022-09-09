@@ -1,6 +1,23 @@
 from telebot import TeleBot, types
 from database.create_model import select_table
-from database.create_model import Percentage, AmountTrade, FixedUsdAmount
+from database.create_model import (
+    Percentage,
+    AmountTrade,
+    FixedUsdAmount,
+    FristEntry,
+    EntryStrategy,
+    # NumberTarget,
+    CloseTradeOnTakeProfit,
+    BlacklistSymbols,
+    StopLossTimeout,
+    DefaultStopLoss,
+    MaxTrades,
+    Owner,
+    Users,
+    Binance,
+    Strategy_owner,
+    Strategy_user,
+    )
 
 import config
 import logging
@@ -8,7 +25,22 @@ import logging
 
 
 # @bot.message_handler(commands=['start', 'help'])
-
+def return_markup(table, back_btn):
+    table_numbers = select_table(table)
+    print('Table max trade: ', table_numbers)
+    markup = types.InlineKeyboardMarkup()
+    lis_btn = []
+    for i, t in enumerate(table_numbers):
+        t = str(t)
+        btnt = types.InlineKeyboardButton(text=t, callback_data=f'{back_btn}-{t}')
+        lis_btn.append(btnt)
+        if i % 2 :
+            markup.add(lis_btn[0], lis_btn[1])
+            lis_btn.clear()
+        elif i == len(table_numbers)-1:
+                markup.add(btnt)
+                lis_btn.clear()
+    return markup
 
 
 def _start(message, bot):
@@ -53,13 +85,7 @@ def _start(message, bot):
                               reply_markup=markup
                               )
 
-# @bot.message_handler(commands=['start', 'help'])
-# def send_welcome(message):
-#     # bot.reply_to(message, "Howdy, how are you doing?")
-#     # markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-#     # markup.add(button5)
-#     bot.set_state(user_id=message.from_user.id, state=adminState.toto, chat_id=message.chat.id)
-#     b
+
 def optimised_config(message: types.Message, bot : TeleBot):
     print('optimised_config')
     markup = types.InlineKeyboardMarkup()
@@ -94,8 +120,6 @@ def auto_trading(message: types.CallbackQuery, bot : TeleBot):
                           parse_mode='HTML',
                           reply_markup=markup
                           )
-
-
 
 
 def bot_configuration(message: types.CallbackQuery, bot : TeleBot): #Todo Done
@@ -152,7 +176,20 @@ def portfolio(message: types.CallbackQuery, bot : TeleBot):  #todo DONE
 
 def max_trade (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
     print('max_trade')
+    table_numbers = select_table(MaxTrades)
+    print('Table max trade: ', table_numbers)
     markup = types.InlineKeyboardMarkup()
+    lis_btn = []
+    for i, t in enumerate(table_numbers):
+        t = str(t)
+        btnt = types.InlineKeyboardButton(text=t, callback_data=f'{config.AMOUNT_PER_TRADE}-{t}')
+        lis_btn.append(btnt)
+        if i % 2 :
+            markup.add(lis_btn[0], lis_btn[1])
+            lis_btn.clear()
+        elif i == len(table_numbers)-1:
+                markup.add(btnt)
+                lis_btn.clear()
     btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.AUTO_TRADING_FILTERS)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     markup.add(btn1, btn5)
@@ -161,7 +198,9 @@ def max_trade (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
 
 def black_list_symboles (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
     print('black_list_symboles')
-    markup = types.InlineKeyboardMarkup()
+    
+    markup = return_markup(BlacklistSymbols, config.AUTO_TRADING_FILTERS)
+    
     btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.AUTO_TRADING_FILTERS)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     markup.add(btn1, btn5)
@@ -217,7 +256,7 @@ def stop_loss_time (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
 
 
 def stategy (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
-    print('stategy')
+    print('stategy', message.data)
     markup = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton(text=config.AMOUNT_PER_TRADE, callback_data=config.AMOUNT_PER_TRADE)
     btn2 = types.InlineKeyboardButton(text=config.ENTRY_STRATEGY, callback_data=config.ENTRY_STRATEGY)
@@ -239,8 +278,8 @@ def stategy (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
     
     
 def entry_strategy (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
-    print('entry_strategy')
-    markup = types.InlineKeyboardMarkup()
+    print('entry_strategy', message.data)
+    markup = return_markup(EntryStrategy, config.STRATEGIES)
     btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.STRATEGIES)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     markup.add(btn1, btn5)
@@ -266,6 +305,7 @@ def take_profit_strategy (message: types.CallbackQuery, bot : TeleBot):  #todo D
  
 def amount_per_trade (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
     print('amount_per_trade', message.data)
+    
     markup = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton(text=config.PERCENTAGE, callback_data=config.PERCENTAGE)
     btn2 = types.InlineKeyboardButton(text=config.FIXED_USD_AMOUNT, callback_data=config.FIXED_USD_AMOUNT)
@@ -296,6 +336,8 @@ def close_trade_on_take_profit (message: types.CallbackQuery, bot : TeleBot):  #
 
 def first_entry_grace_percentage (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
     print('fist_entry_grace_percentage')
+    table_numbers = select_table(FristEntry)
+    print('Table: ', table_numbers)
     markup = types.InlineKeyboardMarkup()
     btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.STRATEGIES)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
@@ -309,12 +351,7 @@ def first_entry_grace_percentage (message: types.CallbackQuery, bot : TeleBot): 
 
 def percentage(message: types.CallbackQuery, bot : TeleBot):  #todo DONE
     
-    table_numbers = select_table(Percentage)
-    print('Table: ', table_numbers)
-    markup = types.InlineKeyboardMarkup()
-    for t in table_numbers:
-        btnt = types.InlineKeyboardButton(text=t+'%', callback_data=f'{config.AMOUNT_PER_TRADE}-{t}')
-        markup.add(btnt)
+    markup = return_markup(Percentage, config.AMOUNT_PER_TRADE)
     btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.AMOUNT_PER_TRADE)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     markup.add(btn1, btn5)

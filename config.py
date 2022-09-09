@@ -20,8 +20,8 @@ STRATEGIES = 'Strategies/General'
 STOP = 'Stop'
 AUTO_TRADING_FILTERS = 'Auto Trading Filters'
 
-MAX_TRADE = 'Max Trade'
-BLACK_LIST_SYMBOLES = 'Black list Symboles'
+MAX_TRADE = 'Max Trades'
+BLACK_LIST_SYMBOLES = 'Blacklist Symbols'
 
 DEFAULT_STOP = 'Default Stop'
 STOP_LOSS_TIME = 'Stop Loss Time'
