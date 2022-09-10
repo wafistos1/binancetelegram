@@ -46,6 +46,11 @@ class EntryStrategy(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(30))
 
+class TakeProfitStrategy(Base):
+    __tablename__ = 'take_profit_strategry'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(30))
+
 class CloseTradeOnTakeProfit(Base):
     __tablename__ = 'close_trade_on_take_profit'
     id = Column(Integer, primary_key=True)

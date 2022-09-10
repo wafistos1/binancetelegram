@@ -17,6 +17,7 @@ from database.create_model import (
     Binance,
     Strategy_owner,
     Strategy_user,
+    TakeProfitStrategy,
     )
 
 import config
@@ -292,7 +293,7 @@ def entry_strategy (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
 
 def take_profit_strategy (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
     print('take_profit_strategy')
-    markup = types.InlineKeyboardMarkup()
+    markup = return_markup(TakeProfitStrategy, config.STRATEGIES)
     btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.STRATEGIES)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     markup.add(btn1, btn5)
@@ -338,7 +339,7 @@ def first_entry_grace_percentage (message: types.CallbackQuery, bot : TeleBot): 
     print('fist_entry_grace_percentage')
     table_numbers = select_table(FristEntry)
     print('Table: ', table_numbers)
-    markup = types.InlineKeyboardMarkup()
+    markup = return_markup(FristEntry, config.STRATEGIES)
     btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.STRATEGIES)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     markup.add(btn1, btn5)

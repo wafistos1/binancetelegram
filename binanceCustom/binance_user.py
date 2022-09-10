@@ -11,9 +11,10 @@ def main():
     res = client.get_exchange_info()
     #Get all orders
     orders = client.get_all_orders(symbol='BNBBTC', limit=10)
-    
+    prices = client.get_all_tickers()
+    avg_price = client.get_avg_price(symbol='BNBBTC')
     # Place on order
-    print(orders)
+    print(avg_price)
     # order = client.create_order(
     #     symbol='BNBBTC',
     #     side=SIDE_BUY,
@@ -22,7 +23,15 @@ def main():
     #     quantity=100,
     #     price='0.00001'
     #     )
+    # order = client.order_limit_buy(
+    #     symbol='BNBBTC',
+    #     quantity=100,
+    #     price='0.00001')
 
+    # order = client.order_limit_sell(
+    #     symbol='BNBBTC',
+    #     quantity=100,
+    #     price='0.00001')
 
 
 if __name__ == "__main__":
