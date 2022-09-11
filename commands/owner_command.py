@@ -1,5 +1,5 @@
 from telebot import TeleBot, types
-from database.create_model import select_table, select_user, select_status_auto_trading, update_auto_trading
+from database.create_model import select_table, select_user
 from database.create_model import (
     Percentage,
     AmountTrade,
@@ -45,40 +45,24 @@ def return_markup(table, back_btn):
 
 
 def _start(message, bot):
-    print(message.data)
-    owner_id = 2
-    try:
-        message_return = message.data.split('-')[1]
-        print(message_return)
-        if message_return == 'On_autotrading':
-            print('Change status auto trading On')
-            user = update_auto_trading(Owner, 1, owner_id )
-            pass
-        else:
-           user = update_auto_trading(Owner, 0, owner_id ) 
-    except:
-        pass
-    user = select_user(Owner, '123')
-    user_auto_trading_status = select_status_auto_trading(Owner, '123')
-    status = 'Off'
-    if user_auto_trading_status:
-        status ='On'
-    markup = types.InlineKeyboardMarkup()
-    btn1 = types.InlineKeyboardButton(text=config.PORTFOLIO_BTN, callback_data=config.PORTFOLIO_BTN)
-    btn2 = types.InlineKeyboardButton(text=config.OPTIMIZED_CONFIG_BTN, callback_data=config.OPTIMIZED_CONFIG_BTN)
-    btn3 = types.InlineKeyboardButton(text=config.BOT_CONFIG_BTN, callback_data= config.BOT_CONFIG_BTN)
-    btn4 = types.InlineKeyboardButton(text=config.AUTO_TRADING, callback_data=config.AUTO_TRADING)
+    
+        user = select_user(Owner)
+        markup = types.InlineKeyboardMarkup()
+        btn1 = types.InlineKeyboardButton(text=config.PORTFOLIO_BTN, callback_data=config.PORTFOLIO_BTN)
+        btn2 = types.InlineKeyboardButton(text=config.OPTIMIZED_CONFIG_BTN, callback_data=config.OPTIMIZED_CONFIG_BTN)
+        btn3 = types.InlineKeyboardButton(text=config.BOT_CONFIG_BTN, callback_data= config.BOT_CONFIG_BTN)
+        btn4 = types.InlineKeyboardButton(text=config.AUTO_TRADING_FILTERS, callback_data=config.AUTO_TRADING)
+        # btn3 = types.InlineKeyboardButton(text='❓ كيفيه التحويل لمحفظه اخرى?', url='https://youtu.be/AcCgcKrABms')
+        # btn4 = types.InlineKeyboardButton(text='♦️ Admin', url='tg://user?id={}'.format(admin_id))
+        markup.add(btn1, btn2)
+        markup.add(btn3, btn4)
 
-    markup.add(btn1, btn2)
-    markup.add(btn3, btn4)
-
-    # ge_text()
-    bot.edit_message_text(chat_id=message.from_user.id,
-                            message_id=message.message.message_id,
-                            text=config.TRADING_MESSAGE_START.format(user, status), 
-                            parse_mode='HTML',
-                            reply_markup=markup
-                            )
+        bot.edit_message_text(chat_id=message.from_user.id,
+                              message_id=message.message.message_id,
+                              text=config.TRADING_MESSAGE_START.format(user), 
+                              parse_mode='HTML',
+                              reply_markup=markup
+                              )
 
 
 def optimised_config(message: types.Message, bot : TeleBot):
@@ -87,7 +71,7 @@ def optimised_config(message: types.Message, bot : TeleBot):
     btn1 = types.InlineKeyboardButton(text=config.PORTFOLIO_BTN, callback_data='myplan1')
     btn2 = types.InlineKeyboardButton(text=config.OPTIMIZED_CONFIG_BTN, callback_data='myplan2')
     btn3 = types.InlineKeyboardButton(text=config.BOT_CONFIG_BTN, callback_data='myplan2')
-    btn4 = types.InlineKeyboardButton(text=config.AUTO_TRADING, callback_data='myplan2')
+    btn4 = types.InlineKeyboardButton(text=config.AUTO_TRADING_BTN, callback_data='myplan2')
 
     markup.add(btn1, btn2)
     markup.add(btn3, btn4)
@@ -101,28 +85,17 @@ def optimised_config(message: types.Message, bot : TeleBot):
 
 
 def auto_trading(message: types.CallbackQuery, bot : TeleBot):
-    print('auto_trading')
+    print('auto_trading_filters')
     markup = types.InlineKeyboardMarkup(row_width=2)
-    status = select_status_auto_trading(Owner, '123')
-    print('Status in auto_trading', type(status))
-    if status:
-        btn1 = types.InlineKeyboardButton(text='👉On👈', callback_data=f'{config.MAIN_MENU}-On_autotrading',)
-        btn2 = types.InlineKeyboardButton(text='Off', callback_data=f'{config.MAIN_MENU}-Off_autotrading',)
-    else:
-        btn1 = types.InlineKeyboardButton(text='On', callback_data=f'{config.MAIN_MENU}-On_autotrading',)
-        btn2 = types.InlineKeyboardButton(text='👉Off👈', callback_data=f'{config.MAIN_MENU}-Off_autotrading',)
-
+    btn1 = types.InlineKeyboardButton(text=config.MAX_TRADE, callback_data=config.MAX_TRADE,)
+    btn2 = types.InlineKeyboardButton(text=config.BLACK_LIST_SYMBOLES, callback_data=config.BLACK_LIST_SYMBOLES,)
+    btn3 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.BOT_CONFIG_BTN,)
     btn4 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
-
     markup.add(btn1, btn2)
-    markup.add(btn4)
-    if status:
-        tx = 'On'
-    else:
-        tx = 'Off'
+    markup.add(btn4, btn3 )
     bot.edit_message_text(chat_id=message.from_user.id,
                           message_id=message.message.message_id,
-                          text=config.AUTO_TRADING_START.format(tx),
+                          text=config.AUTO_TRADING_START,
                           parse_mode='HTML',
                           reply_markup=markup
                           )
@@ -342,9 +315,9 @@ def close_trade_on_take_profit (message: types.CallbackQuery, bot : TeleBot):  #
 
 def first_entry_grace_percentage (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
     print('fist_entry_grace_percentage')
-    table_numbers = select_table(FristEntryGracePercentage)
+    table_numbers = select_table(FristEntryGracePercentageGracePercentage)
     print('Table: ', table_numbers)
-    markup = return_markup(FristEntryGracePercentage, config.STRATEGIES)
+    markup = return_markup(FristEntryGracePercentageGracePercentage, config.STRATEGIES)
     btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.STRATEGIES)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     markup.add(btn1, btn5)

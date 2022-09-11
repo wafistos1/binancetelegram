@@ -11,6 +11,7 @@ BINANCE_API_SECRET = 'VG4M2Q09GThCwhWxIZNGo5mkz7oXQJl2P42DgZVhT0gTeUlsW4ut8Af33N
 PORTFOLIO_BTN = 'Portfolio'
 BOT_CONFIG_BTN = 'Bot Configuration'
 OPTIMIZED_CONFIG_BTN = 'Optimized Configs'
+AUTO_TRADING = 'Auto Trading'
 
 
 BACK = '↩️ Back'
@@ -38,6 +39,9 @@ FIXED_USD_AMOUNT = 'Fixed USD Amount'
 # Start Messages
 TRADING_MESSAGE_START = '''
 <strong>Trading Panel </strong> \n\n
+Welcom {}
+Auto Trading Status: {}
+
 Plz Choose an option
 
 '''
@@ -49,7 +53,9 @@ BOT_CONFIG_START = f'''
 '''
 
 AUTO_TRADING_START = f'''
-<strong>{AUTO_TRADING_FILTERS}:        </strong> \nStatus:         ON
+<strong>{AUTO_TRADING}:        </strong> 
+
+Status: {None}
 
 '''
 
