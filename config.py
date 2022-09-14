@@ -36,6 +36,8 @@ FIRST_ENTRY_GRACE_PERCENTAGE = 'First Entry Grace Percentage'
 PERCENTAGE = 'Percentage'
 FIXED_USD_AMOUNT = 'Fixed USD Amount'
 
+ADD_NEW_STRATEGY = 'Add Strategy'
+
 # Start Messages
 TRADING_MESSAGE_START = '''
 <strong>Trading Panel </strong> \n\n

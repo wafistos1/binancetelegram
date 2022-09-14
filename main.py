@@ -28,13 +28,14 @@ from commands.command import (
     fixed_usd_amount,
     auto_trading,
     display_strategy_owner,
+    copie_strategy,
     )
 from telebot.storage import StateMemoryStorage
 from telebot.handler_backends import State, StatesGroup
 import logging
 import config
 from database.data_pony import check_user
-
+# from states import Create_strategy_state 
 
 
 state_storage = StateMemoryStorage()
@@ -89,8 +90,9 @@ bot.register_callback_query_handler(percentage, pass_bot=True,  func=lambda mess
 bot.register_callback_query_handler(fixed_usd_amount, pass_bot=True,  func=lambda message: message.data.startswith(config.FIXED_USD_AMOUNT))
 bot.register_callback_query_handler(auto_trading, pass_bot=True,  func=lambda message: message.data.startswith(config.AUTO_TRADING))
 bot.register_callback_query_handler(display_strategy_owner, pass_bot=True,  func=lambda message: message.data.startswith('owner_strat'))
+bot.register_callback_query_handler(copie_strategy, pass_bot=True,  func=lambda message: message.data.startswith('Cp-strategy'))
 # bot.register_callback_query_handler(plan1Buy, pass_bot=True, func=lambda message: message.data.startswith('myplan1'), is_on=True)
-
+# bot.register_message_handler(callback=descriptionState, state=adminPanelState.description, pass_bot=True)
 
 bot.add_custom_filter(custom_filters.StateFilter(bot))
 # bot.add_custom_filter(AdminFilter())

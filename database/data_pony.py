@@ -214,11 +214,36 @@ def return_owner_strat(stat_name, owner_id, user_id):
         'first_entry_grace': result.first_entry_grace.number,
         'entry_strategy': result.entry_strategy.number,
     }
+    
+@db_session  
+def return_owner_strat_id(stat_name, owner_id, user_id):
+    result = orm.select(p for p in Strategy_owner if p.name==stat_name).first()
+    return {
+        'name': (result.name, result.name),
+        'take_profit': (result.take_profit.id, result.take_profit.number),
+        'first_entry_grace': (result.first_entry_grace.id, result.first_entry_grace.number),
+        'entry_strategy': (result.entry_strategy.id, result.entry_strategy.number),
+    }
 
 @db_session
 def list_owner_strat(table, user_id, owner_id):
     return list(orm.select(p.name for p in table))
+
+@db_session
+def copy_strategy(name,
+                  take_profit,
+                  first_entry_grace,
+                  entry_strategy,
+                  user_id,
+                  ):
     
+    strategy =  Strategy_user(
+        name=name,
+        take_profit=take_profit,
+        first_entry_grace=first_entry_grace,
+        entry_strategy=entry_strategy,
+        user=user_id,
+        )
 
 if __name__=='__main__':  
-    print(return_owner_strat('owner_strategy2', 3, 2))
+    print(return_owner_strat_id('owner_strategy1', 3, 2))
