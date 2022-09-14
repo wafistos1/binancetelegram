@@ -1,3 +1,4 @@
+from operator import and_
 from sqlalchemy import Column
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
@@ -12,8 +13,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import registry
 from sqlalchemy import update
 from sqlalchemy import insert
-
-
+from sqlalchemy.sql import or_, and_
 Base = declarative_base()
 
 engine = create_engine('mysql+pymysql://wafi:djamel2013@localhost:3306/Telegram')#, echo=True)
@@ -125,7 +125,7 @@ class StrategyUser(Base):
     entry_strategy_id = Column(Integer, ForeignKey('entry_strategy.id'), nullable=False)
     # number_target_id = Column(Integer, ForeignKey('number_target.id'), nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-
+    entry_S_rela = relationship("entry_strategy", foreign_keys='strategy_user.entry_strategy_id')
 
 class StrategyOwner(Base):
     __tablename__ = 'strategy_owner'
@@ -137,7 +137,7 @@ class StrategyOwner(Base):
     entry_strategy_id = Column(Integer, ForeignKey('entry_strategy.id'), nullable=False)
     # number_target_id = Column(Integer, ForeignKey('number_target.id'), nullable=False)
     owner_id = Column(Integer, ForeignKey('owner.id'), nullable=False)
-
+    
 
 
 # Class binance
@@ -296,29 +296,42 @@ def select_table(tablename):
     search_table = select(tablename)
     return [owner.number for owner in session.scalars(search_table)]
 
-def select_user(user_tablename, id):
+def select_user(user_tablename, id, owner_id):
     session = Session(engine)
-    search_user = select([user_tablename.channel_id, user_tablename.id, user_tablename.bot_token]).where(user_tablename.channel_id==id)
-    return [t for t in session.scalars(search_user)]
+    search_user = select([user_tablename.first_name, user_tablename.last_name, user_tablename.channel_id]).where(and_(user_tablename.id==id, owner_id==owner_id))
+    return session.execute(search_user).first()
     
-def select_status_auto_trading(user_tablename, id):
+def status_auto_trading(table, user_id):
     session = Session(engine)
-    search_user = select(user_tablename.auto_trading).where(user_tablename.channel_id==id)
+    search_user = select(table.auto_trading).where(table.id==user_id)
     resultat = session.execute(search_user).first()
-    # print('REsultat', resultat.auto_trading)
     return resultat.auto_trading
 
-def update_auto_trading(user_tablename, value, id):
+def update_auto_trading(user_tablename, value,  user_id):
     session = Session(engine)
-    x = session.query(user_tablename).get(id)
-    # print('X: ', x.auto_trading)
-    # session.query(user_tablename).filter(user_tablename.id = 2).update(user_tablename).where(user_tablename.id == 2).values(name=value)
+    x = session.query(user_tablename).where(user_tablename.id==user_id).first()
     x.auto_trading = value
     session.commit()
+
+def status_entry_strategy(user_id):
+    with engine.connect() as con:
+
+        rs = con.execute(f'''  SELECT number 
+                                    
+                                FROM entry_strategy
+                                    
+                        INNER JOIN  strategy_user
+                             ON strategy_user.entry_strategy_id = entry_strategy.id
+                                    
+                               
+                               
+                               ''')
+        for row in rs:
+            print(row)
         
 if __name__ in '__main__':
     # main()
-    user = select_status_auto_trading(Owner, '123' )
+    user = status_entry_strategy(2)
     print(user)
     # toto = select_table(FixedUsdAmount)
     # print(toto)

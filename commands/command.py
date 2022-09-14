@@ -1,33 +1,40 @@
 from telebot import TeleBot, types
-from database.create_model import select_table, select_user, select_status_auto_trading, update_auto_trading
-from database.create_model import (
-    Percentage,
-    AmountTrade,
-    FixedUsdAmount,
-    FristEntryGracePercentage,
-    EntryStrategy,
-    # NumberTarget,
-    CloseTradeOnTakeProfit,
-    BlacklistSymbols,
-    StopLossTimeout,
-    DefaultStopLoss,
-    MaxTrades,
-    Owner,
-    User,
+# from database.create_model import return_table_value, select_user, status_auto_trading, update_auto_trading
+from database.data_pony import  (
+    Amount_trade, 
+    Entry_strategy,
+    Fixed_usd_amount,
+    Take_profit_strategy,
+    First_entry_grace_percentage,
+    Take_profit_strategy,
+    Close_trade_on_take_profit,
+    Blacklist_symbols,
+    Max_trades,
+    Stop_loss_timeout,
+    Default_stop_loss,
     Binance,
-    StrategyOwner,
-    StrategyUser,
-    TakeProfitStrategy,
+    User,
+    Owner,
+    Strategy_user,
+    Strategy_owner,
+    Percentage,
     )
 
 import config
 import logging
+from database.data_pony import (
+    check_user,
+    return_auto_trading, 
+    return_table_value,
+    return_owner_strat,
+    list_owner_strat,
+    )
 
 
 
 # @bot.message_handler(commands=['start', 'help'])
 def return_markup(table, back_btn):
-    table_numbers = select_table(table)
+    table_numbers = return_table_value(table)
     print('Table max trade: ', table_numbers)
     markup = types.InlineKeyboardMarkup()
     lis_btn = []
@@ -43,26 +50,45 @@ def return_markup(table, back_btn):
                 lis_btn.clear()
     return markup
 
+def return_markup1(table, back_btn, user_id, owner_id):
+    table_numbers = list_owner_strat(table, user_id, owner_id)
+    print('Table max trade: ', table_numbers)
+    markup = types.InlineKeyboardMarkup()
+    lis_btn = []
+    for i, t in enumerate(table_numbers):
+        t = str(t)
+        btnt = types.InlineKeyboardButton(text=t, callback_data=f'owner_strat-{back_btn}--{t}')
+        lis_btn.append(btnt)
+        if i % 2 :
+            markup.add(lis_btn[0], lis_btn[1])
+            lis_btn.clear()
+        elif i == len(table_numbers)-1:
+                markup.add(btnt)
+                lis_btn.clear()
+    return markup
 
 def _start(message, bot):
     print(message.data)
+    user_id = 3
     owner_id = 2
+    
+    
+    
     try:
         message_return = message.data.split('-')[1]
         print(message_return)
         if message_return == 'On_autotrading':
             print('Change status auto trading On')
-            user = update_auto_trading(Owner, 1, owner_id )
-            pass
+            user = return_auto_trading(user_id, change='True' )
+            
         else:
-           user = update_auto_trading(Owner, 0, owner_id ) 
+            user = return_auto_trading(user_id, change='False' )
     except:
         pass
-    user = select_user(Owner, '123')
-    user_auto_trading_status = select_status_auto_trading(Owner, '123')
-    status = 'Off'
-    if user_auto_trading_status:
-        status ='On'
+    user_name, status = check_user(user_id, owner_id)
+    # user = select_user(User, user_id, owner_id)
+    # auto_trading_status = status_auto_trading(user_id)
+
     markup = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton(text=config.PORTFOLIO_BTN, callback_data=config.PORTFOLIO_BTN)
     btn2 = types.InlineKeyboardButton(text=config.OPTIMIZED_CONFIG_BTN, callback_data=config.OPTIMIZED_CONFIG_BTN)
@@ -75,7 +101,7 @@ def _start(message, bot):
     # ge_text()
     bot.edit_message_text(chat_id=message.from_user.id,
                             message_id=message.message.message_id,
-                            text=config.TRADING_MESSAGE_START.format(user, status), 
+                            text=config.TRADING_MESSAGE_START.format(user_name, status), 
                             parse_mode='HTML',
                             reply_markup=markup
                             )
@@ -83,14 +109,20 @@ def _start(message, bot):
 
 def optimised_config(message: types.Message, bot : TeleBot):
     print('optimised_config')
-    markup = types.InlineKeyboardMarkup()
-    btn1 = types.InlineKeyboardButton(text=config.PORTFOLIO_BTN, callback_data='myplan1')
-    btn2 = types.InlineKeyboardButton(text=config.OPTIMIZED_CONFIG_BTN, callback_data='myplan2')
-    btn3 = types.InlineKeyboardButton(text=config.BOT_CONFIG_BTN, callback_data='myplan2')
-    btn4 = types.InlineKeyboardButton(text=config.AUTO_TRADING, callback_data='myplan2')
-
-    markup.add(btn1, btn2)
-    markup.add(btn3, btn4)
+    
+    owner_id = 2
+    user_id = 3
+    # data = return_owner_strat(Strategy_owner, owner_id, user_id)
+    # name = data['name']
+    # take_profit = data['take_profit']
+    # first_entry_grace = data['first_entry_grace']
+    # entry_strategy = data['entry_strategy']
+    
+    markup = return_markup1(Strategy_owner, config.STRATEGIES, 3, 2)
+    
+    btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.MAIN_MENU)
+    btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
+    markup.add(btn1, btn5)
     
     bot.edit_message_text(chat_id=message.from_user.id,
                           message_id=message.message.message_id,
@@ -102,8 +134,11 @@ def optimised_config(message: types.Message, bot : TeleBot):
 
 def auto_trading(message: types.CallbackQuery, bot : TeleBot):
     print('auto_trading')
+    owner_id = 2
+    user_id = 3
+    user_name, status = check_user(user_id, owner_id)
     markup = types.InlineKeyboardMarkup(row_width=2)
-    status = select_status_auto_trading(Owner, '123')
+    status = return_auto_trading(3)
     print('Status in auto_trading', type(status))
     if status:
         btn1 = types.InlineKeyboardButton(text='👉On👈', callback_data=f'{config.MAIN_MENU}-On_autotrading',)
@@ -116,13 +151,9 @@ def auto_trading(message: types.CallbackQuery, bot : TeleBot):
 
     markup.add(btn1, btn2)
     markup.add(btn4)
-    if status:
-        tx = 'On'
-    else:
-        tx = 'Off'
     bot.edit_message_text(chat_id=message.from_user.id,
                           message_id=message.message.message_id,
-                          text=config.AUTO_TRADING_START.format(tx),
+                          text=config.AUTO_TRADING_START.format(status),
                           parse_mode='HTML',
                           reply_markup=markup
                           )
@@ -182,7 +213,7 @@ def portfolio(message: types.CallbackQuery, bot : TeleBot):  #todo DONE
 
 def max_trade (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
     print('max_trade')
-    table_numbers = select_table(MaxTrades)
+    table_numbers = return_table_value(Max_trades)
     print('Table max trade: ', table_numbers)
     markup = types.InlineKeyboardMarkup()
     lis_btn = []
@@ -205,7 +236,7 @@ def max_trade (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
 def black_list_symboles (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
     print('black_list_symboles')
     
-    markup = return_markup(BlacklistSymbols, config.AUTO_TRADING_FILTERS)
+    markup = return_markup(Blacklist_symbols, config.AUTO_TRADING_FILTERS)
     
     btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.AUTO_TRADING_FILTERS)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
@@ -285,7 +316,7 @@ def stategy (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
     
 def entry_strategy (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
     print('entry_strategy', message.data)
-    markup = return_markup(EntryStrategy, config.STRATEGIES)
+    markup = return_markup(Entry_strategy, config.STRATEGIES)
     btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.STRATEGIES)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     markup.add(btn1, btn5)
@@ -298,7 +329,7 @@ def entry_strategy (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
 
 def take_profit_strategy (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
     print('take_profit_strategy')
-    markup = return_markup(TakeProfitStrategy, config.STRATEGIES)
+    markup = return_markup(Take_profit_strategy, config.STRATEGIES)
     btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.STRATEGIES)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     markup.add(btn1, btn5)
@@ -342,9 +373,9 @@ def close_trade_on_take_profit (message: types.CallbackQuery, bot : TeleBot):  #
 
 def first_entry_grace_percentage (message: types.CallbackQuery, bot : TeleBot):  #todo DONE
     print('fist_entry_grace_percentage')
-    table_numbers = select_table(FristEntryGracePercentage)
+    table_numbers = return_table_value(First_entry_grace_percentage)
     print('Table: ', table_numbers)
-    markup = return_markup(FristEntryGracePercentage, config.STRATEGIES)
+    markup = return_markup(First_entry_grace_percentage, config.STRATEGIES)
     btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.STRATEGIES)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     markup.add(btn1, btn5)
@@ -369,9 +400,10 @@ def percentage(message: types.CallbackQuery, bot : TeleBot):  #todo DONE
 
 
 def fixed_usd_amount(message: types.CallbackQuery, bot : TeleBot):  #todo DONE
+
     print('fixed_usd_amount')
     
-    table_numbers = select_table(FixedUsdAmount)
+    table_numbers = return_table_value(Fixed_usd_amount)
     print('Table: ', table_numbers)
     markup = types.InlineKeyboardMarkup()
     for t in table_numbers:
@@ -385,3 +417,34 @@ def fixed_usd_amount(message: types.CallbackQuery, bot : TeleBot):  #todo DONE
                           text=config.FIXED_USD_AMOUNT_START,
                           parse_mode='HTML', reply_markup=markup
                           )
+
+
+def display_strategy_owner(message: types.CallbackQuery, bot : TeleBot):  #todo DONE
+    
+    owner_id = 2
+    user_id = 3
+    print('Message display: ', message.data)
+    strategy_name = message.data.split('--')[-1]
+    data = return_owner_strat(strategy_name, owner_id, user_id)
+    name = data['name']
+    take_profit = data['take_profit']
+    first_entry_grace = data['first_entry_grace']
+    entry_strategy = data['entry_strategy']
+    
+    markup = types.InlineKeyboardMarkup()
+    
+    btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.OPTIMIZED_CONFIG_BTN)
+    btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
+    markup.add(btn1, btn5)
+    bot.edit_message_text(chat_id=message.from_user.id,
+                          message_id=message.message.message_id,
+                          text= f'''
+                          <strong> Strategy Owner: </strong> 
+                          \nName: <strong>{name.upper()} </strong>
+                          \nTake Profit: <strong>{take_profit.upper()} </strong> 
+                          \nFirst Entry Grace: <strong>{first_entry_grace.upper()} </strong> 
+                          \nEntry Strategy: <strong>{entry_strategy.upper()} </strong>
+                            
+                        ''',
+                          parse_mode='HTML', reply_markup=markup
+                        )

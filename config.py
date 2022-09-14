@@ -39,7 +39,7 @@ FIXED_USD_AMOUNT = 'Fixed USD Amount'
 # Start Messages
 TRADING_MESSAGE_START = '''
 <strong>Trading Panel </strong> \n\n
-Welcom {}
+Welcome {}
 Auto Trading Status: {}
 
 Plz Choose an option
@@ -65,8 +65,9 @@ My-Binance(0.23434 BTC / 511.22 USD)
 
 '''
 
-OPTIMISED_CONFIG_START = f'''
-<strong> {OPTIMIZED_CONFIG_BTN}: </strong> \nChoose an option
+OPTIMISED_CONFIG_START = '''
+<strong> Optimized Configs: </strong> \nOwner strategy List
+Click on to Display strategy details
 
 '''
 
