@@ -35,20 +35,19 @@ from telebot.handler_backends import State, StatesGroup
 import logging
 import config
 from database.data_pony import check_user
+from states.state import Create_strategy_state
+from states.state import strategyState
 # from states import Create_strategy_state 
 
 
 state_storage = StateMemoryStorage()
 bot = TeleBot(token=BOT_TOKEN, num_threads=10)
 
-class adminState(StatesGroup):
-    bot_token = State()
-    pack_2_duration = State()
-    toto = State()
+
     
 def trading_start(message):
-    user_id = 3
-    owner_id = 2
+    user_id = 1
+    owner_id = 1
     user_name, status = check_user(user_id, owner_id)
     markup = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton(text=config.PORTFOLIO_BTN, callback_data=config.PORTFOLIO_BTN)
@@ -93,6 +92,7 @@ bot.register_callback_query_handler(display_strategy_owner, pass_bot=True,  func
 bot.register_callback_query_handler(copie_strategy, pass_bot=True,  func=lambda message: message.data.startswith('Cp-strategy'))
 # bot.register_callback_query_handler(plan1Buy, pass_bot=True, func=lambda message: message.data.startswith('myplan1'), is_on=True)
 # bot.register_message_handler(callback=descriptionState, state=adminPanelState.description, pass_bot=True)
+bot.register_message_handler(callback=Create_strategy_state, state=strategyState.name_strategy, pass_bot=True)
 
 bot.add_custom_filter(custom_filters.StateFilter(bot))
 # bot.add_custom_filter(AdminFilter())

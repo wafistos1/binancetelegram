@@ -7,18 +7,21 @@ from database.data_pony import  (
     Take_profit_strategy,
     First_entry_grace_percentage,
     Take_profit_strategy,
-    Close_trade_on_take_profit,
+    Close_trade_on_take_profit, # TODO ajouter cette fonctionnalites
     Blacklist_symbols,
     Max_trades,
     Stop_loss_timeout,
     Default_stop_loss,
     Binance,
-    User,
-    Owner,
+    Users,
+    Memberships,
     Strategy_user,
     Strategy_owner,
     Percentage,
     )
+
+user_toto = 1
+owner_toto = 1
 
 import config
 import logging
@@ -71,8 +74,8 @@ def return_markup1(table, back_btn, user_id, owner_id):
 
 def _start(message, bot):
     print(message.data)
-    user_id = 3
-    owner_id = 2
+    user_id = user_toto
+    owner_id = owner_toto
     try:
         message_return = message.data.split('-')[1]
         print(message_return)
@@ -109,15 +112,15 @@ def _start(message, bot):
 def optimised_config(message: types.Message, bot : TeleBot):
     print('optimised_config')
     
-    owner_id = 2
-    user_id = 3
+    owner_id = owner_toto
+    user_id = user_toto
     # data = return_owner_strat(Strategy_owner, owner_id, user_id)
     # name = data['name']
     # take_profit = data['take_profit']
     # first_entry_grace = data['first_entry_grace']
     # entry_strategy = data['entry_strategy']
     
-    markup = return_markup1(Strategy_owner, config.STRATEGIES, 3, 2)
+    markup = return_markup1(Strategy_owner, config.STRATEGIES, user_id, owner_id)
     btn6 = types.InlineKeyboardButton(text='Add New Strategy', callback_data=config.ADD_NEW_STRATEGY)
     btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.MAIN_MENU)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
@@ -135,11 +138,11 @@ def optimised_config(message: types.Message, bot : TeleBot):
 
 def auto_trading(message: types.CallbackQuery, bot : TeleBot):
     print('auto_trading')
-    owner_id = 2
-    user_id = 3
+    owner_id = owner_toto
+    user_id = user_toto
     user_name, status = check_user(user_id, owner_id)
     markup = types.InlineKeyboardMarkup(row_width=2)
-    status = return_auto_trading(3)
+    status = return_auto_trading(user_id)
     print('Status in auto_trading', type(status))
     if status:
         btn1 = types.InlineKeyboardButton(text='👉On👈', callback_data=f'{config.MAIN_MENU}-On_autotrading',)
@@ -182,7 +185,7 @@ def bot_configuration(message: types.CallbackQuery, bot : TeleBot): #Todo Done
 
 
 def auto_trading_filters(message: types.CallbackQuery, bot : TeleBot):
-    print('auto_trading')
+    print('auto_trading_filters')
     markup = types.InlineKeyboardMarkup(row_width=2)
     btn1 = types.InlineKeyboardButton(text=config.MAX_TRADE, callback_data=config.MAX_TRADE,)
     btn2 = types.InlineKeyboardButton(text=config.BLACK_LIST_SYMBOLES, callback_data=config.BLACK_LIST_SYMBOLES,)
@@ -422,8 +425,8 @@ def fixed_usd_amount(message: types.CallbackQuery, bot : TeleBot):  #todo DONE
 
 def display_strategy_owner(message: types.CallbackQuery, bot : TeleBot):  #todo DONE
     
-    owner_id = 2
-    user_id = 3
+    owner_id = owner_toto
+    user_id = user_toto
     print('Message display: ', message.data)
     strategy_name = message.data.split('--')[-1]
     print('Strategy_copy: ', strategy_name)
@@ -432,6 +435,8 @@ def display_strategy_owner(message: types.CallbackQuery, bot : TeleBot):  #todo 
     take_profit = data['take_profit'][1]
     first_entry_grace = data['first_entry_grace'][1]
     entry_strategy = data['entry_strategy'][1]
+    percentage = data['percentage'][1]
+    fixed_usd_amount = data['fixed_usd_amount'][1]
     
     markup = types.InlineKeyboardMarkup()
     
@@ -449,6 +454,8 @@ def display_strategy_owner(message: types.CallbackQuery, bot : TeleBot):  #todo 
                           \nTake Profit: <strong>{take_profit.upper()} </strong> 
                           \nFirst Entry Grace: <strong>{first_entry_grace.upper()} </strong> 
                           \nEntry Strategy: <strong>{entry_strategy.upper()} </strong>
+                        \nPercentage: <strong>{percentage.upper()} %</strong>
+                        \nFixed Usd Amount: <strong>{fixed_usd_amount.upper()}$</strong>
                             
                         ''',
                           parse_mode='HTML', reply_markup=markup
@@ -456,8 +463,8 @@ def display_strategy_owner(message: types.CallbackQuery, bot : TeleBot):  #todo 
 
     
 def copie_strategy(message: types.CallbackQuery, bot : TeleBot):
-    owner_id = 2
-    user_id = 3
+    owner_id = owner_toto
+    user_id = user_toto
     strategy_name = message.data.split('--')[-1]
     data = return_owner_strat_id(strategy_name, owner_id, user_id)
     # data = {'name': '', 'take_profit': '', 'first_entry_grace': '', 'entry_strategy': '', }
@@ -465,13 +472,26 @@ def copie_strategy(message: types.CallbackQuery, bot : TeleBot):
     take_profit_id = data['take_profit'][0]
     first_entry_grace_id = data['first_entry_grace'][0]
     entry_strategy_id = data['entry_strategy'][0]
+    percentage = data['percentage'][0]
+    fixed_usd_amount = data['fixed_usd_amount'][0]
     
     name = data['name'][1]
     take_profit = data['take_profit'][1]
     first_entry_grace = data['first_entry_grace'][1]
     entry_strategy = data['entry_strategy'][1]
+    percentage = data['percentage'][1]
+    fixed_usd_amount = data['fixed_usd_amount'][1]
     
-    copy_strategy(name_id, take_profit_id, first_entry_grace_id, entry_strategy_id, user_id)
+    copy_strategy(
+        name_id,
+        take_profit_id,
+        first_entry_grace_id,
+        entry_strategy_id,
+        percentage,
+        fixed_usd_amount,
+        user_id,
+        )
+    
     markup = types.InlineKeyboardMarkup()
     btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.OPTIMIZED_CONFIG_BTN)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
@@ -487,7 +507,9 @@ def copie_strategy(message: types.CallbackQuery, bot : TeleBot):
                           \nTake Profit: <strong>{take_profit} </strong> 
                           \nFirst Entry Grace: <strong>{first_entry_grace}</strong> 
                           \nEntry Strategy: <strong>{entry_strategy}</strong>
-                            
+                        \nPercentage: <strong>{percentage.upper()} </strong>
+                        \nFixed Usd Amount: <strong>{fixed_usd_amount.upper()}$</strong>
+                        
                         ''',
                           parse_mode='HTML', reply_markup=markup
                         )
