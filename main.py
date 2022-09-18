@@ -35,7 +35,15 @@ from telebot.handler_backends import State, StatesGroup
 import logging
 import config
 from database.data_pony import check_user
-from states.state import Create_strategy_state
+from states.state import (
+    Create_strategy_state,
+    Strategy_name_state,
+    Strategy_take_profit_state,
+    Strategy_first_entry_grace_percentage_strategy_state,
+    Strategy_close_trade_on_take_profit_strategy_state,
+    Strategy_amount_per_trade_strategy_state,
+    Strategy_final_state,
+)
 from states.state import strategyState
 # from states import Create_strategy_state 
 
@@ -90,9 +98,18 @@ bot.register_callback_query_handler(fixed_usd_amount, pass_bot=True,  func=lambd
 bot.register_callback_query_handler(auto_trading, pass_bot=True,  func=lambda message: message.data.startswith(config.AUTO_TRADING))
 bot.register_callback_query_handler(display_strategy_owner, pass_bot=True,  func=lambda message: message.data.startswith('owner_strat'))
 bot.register_callback_query_handler(copie_strategy, pass_bot=True,  func=lambda message: message.data.startswith('Cp-strategy'))
+bot.register_callback_query_handler(copie_strategy, pass_bot=True,  func=lambda message: message.data.startswith('Cp-strategy'))
 # bot.register_callback_query_handler(plan1Buy, pass_bot=True, func=lambda message: message.data.startswith('myplan1'), is_on=True)
 # bot.register_message_handler(callback=descriptionState, state=adminPanelState.description, pass_bot=True)
-bot.register_message_handler(callback=Create_strategy_state, state=strategyState.name_strategy, pass_bot=True)
+bot.register_callback_query_handler(callback=Create_strategy_state, pass_bot=True,  func=lambda message: message.data == config.ADD_NEW_STRATEGY)
+
+
+bot.register_message_handler(callback=Strategy_name_state, state=strategyState.name_strategy, pass_bot=True)
+bot.register_message_handler(callback=Strategy_take_profit_state, state=strategyState.take_profit_strategy, pass_bot=True)
+bot.register_message_handler(callback=Strategy_first_entry_grace_percentage_strategy_state, state=strategyState.first_entry_grace_percentage_strategy, pass_bot=True)
+bot.register_message_handler(callback=Strategy_close_trade_on_take_profit_strategy_state, state=strategyState.close_trade_on_take_profit_strategy, pass_bot=True)
+bot.register_message_handler(callback=Strategy_amount_per_trade_strategy_state, state=strategyState.amount_per_trade_strategy, pass_bot=True)
+bot.register_message_handler(callback=Strategy_final_state, state=strategyState.final, pass_bot=True)
 
 bot.add_custom_filter(custom_filters.StateFilter(bot))
 # bot.add_custom_filter(AdminFilter())
