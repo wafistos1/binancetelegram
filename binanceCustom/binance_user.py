@@ -42,8 +42,8 @@ def main():
     side=SIDE_BUY,
     type=ORDER_TYPE_LIMIT,
     timeInForce=TIME_IN_FORCE_GTC,
-    quantity=0.0001000,
-    price='10')
+    quantity=0.001,
+    price='18400')
     print(order)
 
 if __name__ == "__main__":
