@@ -13,10 +13,14 @@ def main():
     orders = client.get_all_orders(symbol='BNBBTC', limit=10)
     prices = client.get_all_tickers()
     avg_price = client.get_avg_price(symbol='BNBBTC')
+    info = client.get_symbol_info('BTCUSDT')
     # Place on order
-    print(avg_price)
+    print(info['filters'][2]['minQty'])
+    
+    # for price in prices:
+    #     print(price['symbol'])
     # order = client.create_order(
-    #     symbol='BNBBTC',
+    #     symbol='BTC',
     #     side=SIDE_BUY,
     #     type=ORDER_TYPE_LIMIT,
     #     timeInForce=TIME_IN_FORCE_GTC,
@@ -24,15 +28,23 @@ def main():
     #     price='0.00001'
     #     )
     # order = client.order_limit_buy(
-    #     symbol='BNBBTC',
-    #     quantity=100,
+    #     symbol='BTCUSDT',
+    #     quantity=10,
     #     price='0.00001')
 
     # order = client.order_limit_sell(
-    #     symbol='BNBBTC',
-    #     quantity=100,
+    #     symbol='BTCUSDT',
+    #     quantity=10,
     #     price='0.00001')
 
+    order = client.create_test_order(
+    symbol='BTCUSDT',
+    side=SIDE_BUY,
+    type=ORDER_TYPE_LIMIT,
+    timeInForce=TIME_IN_FORCE_GTC,
+    quantity=0.0001000,
+    price='10')
+    print(order)
 
 if __name__ == "__main__":
     main()

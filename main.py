@@ -41,7 +41,8 @@ from states.state import (
     Strategy_take_profit_state,
     Strategy_first_entry_grace_percentage_strategy_state,
     Strategy_close_trade_on_take_profit_strategy_state,
-    Strategy_amount_per_trade_strategy_state,
+    Strategy_amount_per_trade_strategy_percentage_state,
+    Strategy_amount_per_trade_strategy_fix_usd_state,
     Strategy_final_state,
 )
 from states.state import strategyState
@@ -108,7 +109,8 @@ bot.register_message_handler(callback=Strategy_name_state, state=strategyState.n
 bot.register_message_handler(callback=Strategy_take_profit_state, state=strategyState.take_profit_strategy, pass_bot=True)
 bot.register_message_handler(callback=Strategy_first_entry_grace_percentage_strategy_state, state=strategyState.first_entry_grace_percentage_strategy, pass_bot=True)
 bot.register_message_handler(callback=Strategy_close_trade_on_take_profit_strategy_state, state=strategyState.close_trade_on_take_profit_strategy, pass_bot=True)
-bot.register_message_handler(callback=Strategy_amount_per_trade_strategy_state, state=strategyState.amount_per_trade_strategy, pass_bot=True)
+bot.register_message_handler(callback=Strategy_amount_per_trade_strategy_percentage_state, state=strategyState.amount_per_trade_percentage_strategy, pass_bot=True)
+bot.register_message_handler(callback=Strategy_amount_per_trade_strategy_fix_usd_state, state=strategyState.amount_per_trade_fix_strategy, pass_bot=True)
 bot.register_message_handler(callback=Strategy_final_state, state=strategyState.final, pass_bot=True)
 
 bot.add_custom_filter(custom_filters.StateFilter(bot))
