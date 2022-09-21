@@ -301,6 +301,37 @@ def copy_strategy(name,
         users=user_id,
         )
 
+@db_session
+def save_strategy(name,
+                  take_profit_number,
+                  first_entry_grace_number,
+                  entry_strategy_number,
+                  percentage_number,
+                  fixed_usd_amount_number,
+                  user_id,
+                  ):
+    take_profit = orm.select(p for p in Take_profit_strategy if p.number==take_profit_number).first()
+    first_entry_grace = orm.select(p for p in First_entry_grace_percentage if p.number==first_entry_grace_number).first()
+    entry_strategy = orm.select(p for p in Entry_strategy if p.number==entry_strategy_number).first()
+    percentage = orm.select(p for p in Percentage if p.number==percentage_number).first()
+    fix_usd = orm.select(p for p in Fixed_usd_amount if p.number==fixed_usd_amount_number).first()
+    print('Percentage: ', percentage)
+    print('fixed_usd_amount: ', fix_usd)
+    create_amount = Amount_trade(
+            percentage=percentage,
+            fixed_usd_amount=fix_usd,
+                                 
+                                 )
+
+    strategy =  Strategy_owner(
+        name=name,
+        take_profit=take_profit,
+        first_entry_grace=first_entry_grace,
+        entry_strategy=entry_strategy,
+        # close_trade_on_take_profit=,
+        amount_per_trade=create_amount,
+        Memberships=user_id,
+        )
 if __name__=='__main__': 
     # pass
-    print(copy_strategy('owner_strat_2', 3, 3, 1, '10', '50',1))
+    print(save_strategy('owner_strat_3', 'One Target', '1.2', 'Off', '10', '50',1))
