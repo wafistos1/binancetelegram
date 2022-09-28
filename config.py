@@ -37,7 +37,11 @@ PERCENTAGE = 'Percentage'
 FIXED_USD_AMOUNT = 'Fixed USD Amount'
 
 ADD_NEW_STRATEGY = 'Add Strategy'
-
+AMOUNT_PER_TRADE_STATE = 'state Amount per Trade state'
+FINAL_STATE = 'final_state'
+PERCENTAGE_STATE = 'STATE PERCENTAGE'
+FIX_USD_STATE = 'STATE FIX USD AMOUNT'
+DELETE_STRATEGY = 'Delete stratgy owner'
 # Start Messages
 TRADING_MESSAGE_START = '''
 <strong>Trading Panel </strong> \n\n
@@ -134,5 +138,24 @@ PERCENTAGE_START = f'''
 '''
 FIXED_USD_AMOUNT_START = f'''
 <strong>{STRATEGIES} > {AMOUNT_PER_TRADE} > {FIXED_USD_AMOUNT}      </strong> \nStatus:    
+
+'''
+
+FINAL_STATE_START = '''
+<strong>Summary of strategy details</strong> \n:    
+click on Yes to accept on no to return to the menu
+NAME: {}\n
+Entry Strategy: {}\n
+Take Profit: {}\n
+Close Trade on TP: {}\n
+Stop loss Time: {}\n
+Percentage: {}\n
+Fix Amount USD: {}\n
+
+'''
+
+AMOUNT_PER_TRADE_STATE_START = f'''
+<strong> CHOOSE ONE </strong> \n
+:    
 
 '''

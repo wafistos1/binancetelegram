@@ -29,6 +29,8 @@ from commands.command import (
     auto_trading,
     display_strategy_owner,
     copie_strategy,
+    Delete_strategy,
+    End_delete_strategy,
     )
 from telebot.storage import StateMemoryStorage
 from telebot.handler_backends import State, StatesGroup
@@ -38,12 +40,14 @@ from database.data_pony import check_user
 from states.state import (
     Create_strategy_state,
     Strategy_name_state,
-    Strategy_take_profit_state,
-    Strategy_first_entry_strategy_state,
-    Strategy_entry_strategy_state,
-    Strategy_amount_per_trade_strategy_percentage_state,
-    Strategy_amount_per_trade_strategy_fix_usd_state,
+    Entry_strategy_state,
+    Take_profit_state,
+    Stop_loss_strategy_state,
+    Close_trade_strategy_state,
+    Amount_per_trade_strategy_percentage_state,
+    Amount_per_trade_strategy_fix_usd_state,
     Strategy_final_state,
+    Amount_per_trade_state,
 )
 from states.state import strategyState
 # from states import Create_strategy_state 
@@ -99,19 +103,32 @@ bot.register_callback_query_handler(fixed_usd_amount, pass_bot=True,  func=lambd
 bot.register_callback_query_handler(auto_trading, pass_bot=True,  func=lambda message: message.data.startswith(config.AUTO_TRADING))
 bot.register_callback_query_handler(display_strategy_owner, pass_bot=True,  func=lambda message: message.data.startswith('owner_strat'))
 bot.register_callback_query_handler(copie_strategy, pass_bot=True,  func=lambda message: message.data.startswith('Cp-strategy'))
-bot.register_callback_query_handler(copie_strategy, pass_bot=True,  func=lambda message: message.data.startswith('Cp-strategy'))
-# bot.register_callback_query_handler(plan1Buy, pass_bot=True, func=lambda message: message.data.startswith('myplan1'), is_on=True)
-# bot.register_message_handler(callback=descriptionState, state=adminPanelState.description, pass_bot=True)
+# bot.register_callback_query_handler(copie_strategy, pass_bot=True,  func=lambda message: message.data.startswith('Cp-strategy'))
 bot.register_callback_query_handler(callback=Create_strategy_state, pass_bot=True,  func=lambda message: message.data == config.ADD_NEW_STRATEGY)
+bot.register_callback_query_handler(callback=Delete_strategy, pass_bot=True,  func=lambda message: message.data == config.DELETE_STRATEGY)
+bot.register_callback_query_handler(callback=End_delete_strategy, pass_bot=True,  func=lambda message: message.data.startswith(f'delete-{config.STRATEGIES}'))
+
+# bot.register_message_handler(callback=descriptionState, state=adminPanelState.description, pass_bot=True)
+# bot.register_callback_query_handler(Strategy_take_profit_state, pass_bot=True, func=lambda message: message.data.startswith(f'state'), is_on=True)
+bot.register_callback_query_handler(Entry_strategy_state, pass_bot=True,  func=lambda message: message.data.startswith(f'state-{config.ENTRY_STRATEGY}'))
+bot.register_callback_query_handler(Take_profit_state, pass_bot=True,  func=lambda message: message.data.startswith(f'state-{config.TAKE_PROFIT_STRATEGY}'))
+bot.register_callback_query_handler(Stop_loss_strategy_state, pass_bot=True,  func=lambda message: message.data.startswith(f'state-{config.STOP_LOSS_TIME}'))
+bot.register_callback_query_handler(Close_trade_strategy_state, pass_bot=True,  func=lambda message: message.data.startswith(f'state-{config.CLOSE_TRADE_ON_TAKE_PROFIT}'))
+bot.register_callback_query_handler(Amount_per_trade_strategy_percentage_state, pass_bot=True,  func=lambda message: message.data.startswith(f'state-{config.PERCENTAGE_STATE}'))
+bot.register_callback_query_handler(Amount_per_trade_strategy_fix_usd_state, pass_bot=True,  func=lambda message: message.data.startswith(f'state-{config.FIX_USD_STATE}'))
+bot.register_callback_query_handler(Strategy_final_state, pass_bot=True,  func=lambda message: message.data.startswith(config.FINAL_STATE))
+bot.register_callback_query_handler(Amount_per_trade_state, pass_bot=True,  func=lambda message: message.data.startswith(config.AMOUNT_PER_TRADE_STATE))
+
 
 
 bot.register_message_handler(callback=Strategy_name_state, state=strategyState.name_strategy, pass_bot=True)
-bot.register_message_handler(callback=Strategy_take_profit_state, state=strategyState.take_profit_strategy, pass_bot=True)
-bot.register_message_handler(callback=Strategy_first_entry_strategy_state, state=strategyState.first_entry_strategy, pass_bot=True)
-bot.register_message_handler(callback=Strategy_entry_strategy_state, state=strategyState.entry_strategy, pass_bot=True)
-bot.register_message_handler(callback=Strategy_amount_per_trade_strategy_percentage_state, state=strategyState.amount_per_trade_percentage_strategy, pass_bot=True)
-bot.register_message_handler(callback=Strategy_amount_per_trade_strategy_fix_usd_state, state=strategyState.amount_per_trade_fix_strategy, pass_bot=True)
-bot.register_message_handler(callback=Strategy_final_state, state=strategyState.final, pass_bot=True)
+# bot.register_message_handler(callback=Strategy_entry_strategy_state, state=strategyState.entry_strategy, pass_bot=True)
+# bot.register_message_handler(callback=Strategy_take_profit_state, state=strategyState.take_profit_strategy, pass_bot=True)
+# bot.register_message_handler(callback=Strategy_close_trade_strategy_state, state=strategyState.close_trade_strategy, pass_bot=True)
+# bot.register_message_handler(callback=Strategy_stop_loss_strategy_state, state=strategyState.stop_loss_strategy, pass_bot=True)
+# bot.register_message_handler(callback=Strategy_amount_per_trade_strategy_percentage_state, state=strategyState.amount_per_trade_percentage_strategy, pass_bot=True)
+# bot.register_message_handler(callback=Strategy_amount_per_trade_strategy_fix_usd_state, state=strategyState.amount_per_trade_fix_strategy, pass_bot=True)
+# bot.register_message_handler(callback=Strategy_final_state, state=strategyState.final, pass_bot=True)
 
 bot.add_custom_filter(custom_filters.StateFilter(bot))
 # bot.add_custom_filter(AdminFilter())

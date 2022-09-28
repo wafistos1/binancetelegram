@@ -3,6 +3,9 @@ from datetime import datetime
 from pony.orm import *
 
 
+
+
+
 db = orm.Database()
 # MySQL
 db.bind(provider='mysql', host='localhost', user='wafi', passwd='djamel2013', db='Telegram')
@@ -22,7 +25,6 @@ class Percentage(db.Entity):
 class First_entry_grace_percentage(db.Entity):
     number = orm.Required(str)
     strategy_Users= orm.Set('Strategy_user')
-    strategy_owner = orm.Set('Strategy_owner')
     
 class Entry_strategy(db.Entity):
     number = orm.Required(str)
@@ -38,6 +40,7 @@ class Take_profit_strategy(db.Entity):
 class Close_trade_on_take_profit(db.Entity):
     number = orm.Required(str)
     strategy_Users= orm.Set('Strategy_user')
+    strategy_owner = orm.Set('Strategy_owner')
 
 class Blacklist_symbols(db.Entity):
     number = orm.Required(str)
@@ -48,6 +51,7 @@ class Max_trades(db.Entity):
 
 class Stop_loss_timeout(db.Entity):
     number = orm.Required(str)
+    strategy_owner = orm.Set('Strategy_owner')
 
 class Default_stop_loss(db.Entity):
     number = orm.Required(str)
@@ -112,9 +116,10 @@ class Strategy_user(db.Entity):
 
 class Strategy_owner(db.Entity):
     name = orm.Required(str)
-    take_profit = orm.Optional(Take_profit_strategy)
-    first_entry_grace = orm.Optional(First_entry_grace_percentage, default=1)
     entry_strategy = orm.Optional(Entry_strategy)
+    take_profit = orm.Optional(Take_profit_strategy)
+    stop_loss_time = orm.Optional(Stop_loss_timeout)
+    close_trade_on_take_profit = orm.Optional(Close_trade_on_take_profit)
     amount_per_trade = orm.Optional(Amount_trade)
     Memberships = orm.Required(Memberships)
     
@@ -122,100 +127,100 @@ class Strategy_owner(db.Entity):
 
 db.generate_mapping(create_tables=True)
 # with orm.db_session:
-#     owner = Memberships(
-#         channel_username='Channel_test_bot_telegram_username',
-#         bot_token='bot_token_channel1',
-#         entry_date= '2018-12-19 09:26:03.478039',
-#         expire_time='2018-12-19 09:26:03.478039',
-#         is_warn=1,
-#         auto_trading=0,
-#         username='Owner1'
-#         )
-#     # # print(owner)
-#     user= Users(
-#         username='username_user',
-#         first_name='Wafi',
-#         last_name='mameri',
-#         auto_trading=0,
-#         bot_token=owner.bot_token,
-#         )
-#     binance = Binance(
-#         api_key='api_key_binance_test',
-#         api_secret='api_secret_binance_test',
-#         symbol='Dinars',
-#         total_last_day= '1234',
-#         total_last_month= '1234',
-#         users=user)
+    # owner = Memberships(
+    #     channel_username='Channel_test_bot_telegram_username',
+    #     bot_token='bot_token_channel1',
+    #     entry_date= '2018-12-19 09:26:03.478039',
+    #     expire_time='2018-12-19 09:26:03.478039',
+    #     is_warn=1,
+    #     auto_trading=0,
+    #     username='Owner1'
+    #     )
+    # # # print(owner)
+    # user= Users(
+    #     username='username_user',
+    #     first_name='Wafi',
+    #     last_name='mameri',
+    #     auto_trading=0,
+    #     bot_token=owner.bot_token,
+    #     )
+    # binance = Binance(
+    #     api_key='api_key_binance_test',
+    #     api_secret='api_secret_binance_test',
+    #     symbol='Dinars',
+    #     total_last_day= '1234',
+    #     total_last_month= '1234',
+    #     users=user)
 
 
-#     per_10 = Percentage(number='None',)
-#     per_1 = Percentage(number='1',)
-#     per_2 = Percentage(number='2',)
-#     per_3 = Percentage(number='5',)
-#     per_4 = Percentage(number='10',)
-#     per_5 = Percentage(number='15',)
-#     per_6 = Percentage(number='20',)
-#     per_7 = Percentage(number='25',)
-#     per_8 = Percentage(number='30',)
-#     per_9 = Percentage(number='40',)
+    # per_10 = Percentage(number='None',)
+    # per_1 = Percentage(number='1',)
+    # per_2 = Percentage(number='2',)
+    # per_3 = Percentage(number='5',)
+    # per_4 = Percentage(number='10',)
+    # per_5 = Percentage(number='15',)
+    # per_6 = Percentage(number='20',)
+    # per_7 = Percentage(number='25',)
+    # per_8 = Percentage(number='30',)
+    # per_9 = Percentage(number='40',)
     
-#     dsl1 = Default_stop_loss(number='Without')
-#     dsl2 = Default_stop_loss(number='1')
-#     dsl3 = Default_stop_loss(number='2')
-#     dsl4 = Default_stop_loss(number='3')
-#     dsl5 = Default_stop_loss(number='4')
-#     dsl6 = Default_stop_loss(number='5')
-#     dsl7 = Default_stop_loss(number='6')
-#     dsl8 = Default_stop_loss(number='7.5')
-#     dsl9 = Default_stop_loss(number='10')
-#     dsl10 = Default_stop_loss(number='15')
+    # dsl1 = Default_stop_loss(number='Without')
+    # dsl2 = Default_stop_loss(number='1')
+    # dsl3 = Default_stop_loss(number='2')
+    # dsl4 = Default_stop_loss(number='3')
+    # dsl5 = Default_stop_loss(number='4')
+    # dsl6 = Default_stop_loss(number='5')
+    # dsl7 = Default_stop_loss(number='6')
+    # dsl8 = Default_stop_loss(number='7.5')
+    # dsl9 = Default_stop_loss(number='10')
+    # dsl10 = Default_stop_loss(number='15')
     
-#     es1 = Entry_strategy(number='Disable')
-#     es2 = Entry_strategy(number='One Target')
-#     es3 = Entry_strategy(number='Two Targets')
-#     es4 = Entry_strategy(number='Three Targets')
-#     es5 = Entry_strategy(number='Fifty On First Traget')
-#     es6 = Entry_strategy(number='Skip First')
+    # es1 = Entry_strategy(number='Disable')
+    # es2 = Entry_strategy(number='One Target')
+    # es3 = Entry_strategy(number='Two Targets')
+    # es4 = Entry_strategy(number='Three Targets')
+    # es5 = Entry_strategy(number='Fifty On First Traget')
+    # es6 = Entry_strategy(number='Skip First')
     
         
-#     tps1 = Take_profit_strategy(number='Disable')
-#     tps2 = Take_profit_strategy(number='One Target')
-#     tps3 = Take_profit_strategy(number='Two Targets')
-#     tps4 = Take_profit_strategy(number='Three Targets')
-#     tps5 = Take_profit_strategy(number='Fifty On First Traget')
-#     tps6 = Take_profit_strategy(number='Skip First')
+    # tps1 = Take_profit_strategy(number='Disable')
+    # tps2 = Take_profit_strategy(number='One Target')
+    # tps3 = Take_profit_strategy(number='Two Targets')
+    # tps4 = Take_profit_strategy(number='Three Targets')
+    # tps5 = Take_profit_strategy(number='Fifty On First Traget')
+    # tps6 = Take_profit_strategy(number='Skip First')
     
-#     fegp1 = First_entry_grace_percentage(number='Disable')
-#     fegp2 = First_entry_grace_percentage(number='0.4')
-#     fegp3 = First_entry_grace_percentage(number='0.8')
-#     fegp4 = First_entry_grace_percentage(number='1.2')
-#     fegp5 = First_entry_grace_percentage(number='1.6')
-#     fegp6 = First_entry_grace_percentage(number='2.0')
-#     fegp7 = First_entry_grace_percentage(number='2.4')
-#     fegp8 = First_entry_grace_percentage(number='2.8')
-#     fegp9 = First_entry_grace_percentage(number='3.2')
-#     fegp10 = First_entry_grace_percentage(number='3.6')
-#     fegp11 = First_entry_grace_percentage(number='4.0')
+    # fegp1 = First_entry_grace_percentage(number='Disable')
+    # fegp2 = First_entry_grace_percentage(number='0.4')
+    # fegp3 = First_entry_grace_percentage(number='0.8')
+    # fegp4 = First_entry_grace_percentage(number='1.2')
+    # fegp5 = First_entry_grace_percentage(number='1.6')
+    # fegp6 = First_entry_grace_percentage(number='2.0')
+    # fegp7 = First_entry_grace_percentage(number='2.4')
+    # fegp8 = First_entry_grace_percentage(number='2.8')
+    # fegp9 = First_entry_grace_percentage(number='3.2')
+    # fegp10 = First_entry_grace_percentage(number='3.6')
+    # fegp11 = First_entry_grace_percentage(number='4.0')
     
-#     fua1 = Fixed_usd_amount(number='None')
-#     fua2 = Fixed_usd_amount(number='20')
-#     fua3 = Fixed_usd_amount(number='50')
-#     fua4 = Fixed_usd_amount(number='100')
-#     fua5 = Fixed_usd_amount(number='500')
-#     fua6 = Fixed_usd_amount(number='1000')
-#     fua7 = Fixed_usd_amount(number='2000')
-#     fua8 = Fixed_usd_amount(number='5000')
-#     fua9 = Fixed_usd_amount(number='10000')
-#     slt1 = Stop_loss_timeout(number='Without')
-#     slt2 = Stop_loss_timeout(number='1 minute')
-#     slt3 = Stop_loss_timeout(number='5 minute')
-#     slt4 = Stop_loss_timeout(number='1 hour')
+    # fua1 = Fixed_usd_amount(number='None')
+    # fua2 = Fixed_usd_amount(number='20')
+    # fua3 = Fixed_usd_amount(number='50')
+    # fua4 = Fixed_usd_amount(number='100')
+    # fua5 = Fixed_usd_amount(number='500')
+    # fua6 = Fixed_usd_amount(number='1000')
+    # fua7 = Fixed_usd_amount(number='2000')
+    # fua8 = Fixed_usd_amount(number='5000')
+    # fua9 = Fixed_usd_amount(number='10000')
+    # slt1 = Stop_loss_timeout(number='Without')
+    # slt2 = Stop_loss_timeout(number='1 minute')
+    # slt3 = Stop_loss_timeout(number='5 minute')
+    # slt4 = Stop_loss_timeout(number='1 hour')
 
-#     ctotp1 = Close_trade_on_take_profit(number='On')
-#     ctotp2 = Close_trade_on_take_profit(number='Off')
+    # ctotp1 = Close_trade_on_take_profit(number='On')
+    # ctotp2 = Close_trade_on_take_profit(number='Off')
 
-#     slt5 = Stop_loss_timeout(number='4 hours')
-#     ampt = Amount_trade(percentage=per_4, fixed_usd_amount=fua3)
+    # slt5 = Stop_loss_timeout(number='4 hours')
+    # ampt = Amount_trade(percentage=per_4, fixed_usd_amount=fua3)
         
 @db_session
 def return_auto_trading(user_id, change=None):
@@ -266,9 +271,10 @@ def return_owner_strat_id(stat_name, owner_id, user_id):
     fixed_usd_amount = result.amount_per_trade.fixed_usd_amount
     return {
         'name': (result.name, result.name),
-        'take_profit': (result.take_profit.id, result.take_profit.number),
-        'first_entry_grace': (result.first_entry_grace.id, result.first_entry_grace.number),
         'entry_strategy': (result.entry_strategy.id, result.entry_strategy.number),
+        'take_profit': (result.take_profit.id, result.take_profit.number),
+        'close_trade': (result.close_trade_on_take_profit.id, result.close_trade_on_take_profit.number),
+        'stop_loss': (result.stop_loss_time.id, result.stop_loss_time.number),
         'percentage': (percentage.id, percentage.number),
         'fixed_usd_amount': (fixed_usd_amount.id, fixed_usd_amount.number),
         
@@ -280,9 +286,10 @@ def list_owner_strat(table, user_id, owner_id):
 
 @db_session
 def copy_strategy(name,
-                  take_profit,
-                  first_entry_grace,
                   entry_strategy,
+                  take_profit,
+                  close_trade_on_take_profit,
+                  top_loss_time,
                   percentage,
                   fixed_usd_amount,
                   user_id,
@@ -293,26 +300,28 @@ def copy_strategy(name,
     print(amount)
     strategy =  Strategy_user(
         name=name,
-        take_profit=take_profit,
-        first_entry_grace=first_entry_grace,
         entry_strategy=entry_strategy,
+        take_profit=take_profit,
+        close_trade_on_take_profit=close_trade_on_take_profit,
+        top_loss_time=top_loss_time,
         amount_per_trade=amount.id,
-        close_trade_on_take_profit=2,
         users=user_id,
         )
 
 @db_session
 def save_strategy(name,
-                  take_profit_number,
-                  first_entry_grace_number,
                   entry_strategy_number,
+                  take_profit_number,
+                  close_trade_on_take_profit_number,
+                  stop_loss_time_number,
                   percentage_number,
                   fixed_usd_amount_number,
                   user_id,
                   ):
-    take_profit = orm.select(p for p in Take_profit_strategy if p.number==take_profit_number).first()
-    first_entry_grace = orm.select(p for p in First_entry_grace_percentage if p.number==first_entry_grace_number).first()
     entry_strategy = orm.select(p for p in Entry_strategy if p.number==entry_strategy_number).first()
+    take_profit = orm.select(p for p in Take_profit_strategy if p.number==take_profit_number).first()
+    close_trade_on_take_profit = orm.select(p for p in Close_trade_on_take_profit if p.number==close_trade_on_take_profit_number).first()
+    stop_loss_time = orm.select(p for p in Stop_loss_timeout if p.number==stop_loss_time_number).first()
     percentage = orm.select(p for p in Percentage if p.number==percentage_number).first()
     fix_usd = orm.select(p for p in Fixed_usd_amount if p.number==fixed_usd_amount_number).first()
     print('Percentage: ', percentage)
@@ -325,13 +334,28 @@ def save_strategy(name,
 
     strategy =  Strategy_owner(
         name=name,
-        take_profit=take_profit,
-        first_entry_grace=first_entry_grace,
         entry_strategy=entry_strategy,
-        # close_trade_on_take_profit=,
+        take_profit=take_profit,
+        close_trade_on_take_profit=close_trade_on_take_profit,
+        stop_loss_time=stop_loss_time,
         amount_per_trade=create_amount,
         Memberships=user_id,
         )
+@db_session
+def delete_strategy(name, owner_id):
+    try:
+        owner = orm.select(p for p in Memberships if p.id==owner_id ).first()
+        print(owner)
+        
+        strategy = orm.select(p for p in Strategy_owner if p.name==name and p.Memberships==owner).first()
+        strategy.delete()
+        return True
+    except:
+        return False
 if __name__=='__main__': 
-    # pass
-    print(save_strategy('owner_strat_3', 'One Target', '1.2', 'Off', '10', '50',1))
+    # print(check_user(1, 1))
+    print(delete_strategy('wafistos2', 1))
+    # print(return_auto_trading(1))
+    #pass
+    # db.generate_mapping(create_tables=True)
+    # print(save_strategy('owner_strat_3', 'One Target', '1.2', 'Off', '10', '50',1))

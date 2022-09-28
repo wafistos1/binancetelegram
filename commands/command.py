@@ -33,6 +33,7 @@ from database.data_pony import (
     return_owner_strat_id,
     list_owner_strat,
     copy_strategy,
+    delete_strategy,
     )
 
 
@@ -55,6 +56,7 @@ def return_markup(table, back_btn):
                 lis_btn.clear()
     return markup
 
+
 def return_markup1(table, back_btn, user_id, owner_id):
     table_numbers = list_owner_strat(table, user_id, owner_id)
     print('Table max trade: ', table_numbers)
@@ -63,6 +65,23 @@ def return_markup1(table, back_btn, user_id, owner_id):
     for i, t in enumerate(table_numbers):
         t = str(t)
         btnt = types.InlineKeyboardButton(text=f'{i+1}- {t}', callback_data=f'owner_strat-{back_btn}--{t}')
+        lis_btn.append(btnt)
+        if i % 2 :
+            markup.add(lis_btn[0], lis_btn[1])
+            lis_btn.clear()
+        elif i == len(table_numbers)-1:
+                markup.add(btnt)
+                lis_btn.clear()
+    return markup
+
+def return_markup_delete(table, back_btn, user_id, owner_id):
+    table_numbers = list_owner_strat(table, user_id, owner_id)
+    print('Table max trade: ', table_numbers)
+    markup = types.InlineKeyboardMarkup()
+    lis_btn = []
+    for i, t in enumerate(table_numbers):
+        t = str(t)
+        btnt = types.InlineKeyboardButton(text=f'{i+1}- {t}', callback_data=f'delete-{back_btn}--{t}')
         lis_btn.append(btnt)
         if i % 2 :
             markup.add(lis_btn[0], lis_btn[1])
@@ -109,7 +128,7 @@ def _start(message, bot):
                             )
 
 
-def optimised_config(message: types.Message, bot : TeleBot):
+def optimised_config(message: types.Message, bot : TeleBot): # todo For owner function
     print('optimised_config')
     
     owner_id = owner_toto
@@ -122,10 +141,11 @@ def optimised_config(message: types.Message, bot : TeleBot):
     
     markup = return_markup1(Strategy_owner, config.STRATEGIES, user_id, owner_id)
     btn6 = types.InlineKeyboardButton(text='Add New Strategy', callback_data=config.ADD_NEW_STRATEGY)
+    btn7 = types.InlineKeyboardButton(text='Delete Strategy', callback_data=config.DELETE_STRATEGY)
     btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.MAIN_MENU)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     
-    markup.add(btn6)
+    markup.add(btn6, btn7)
     markup.add(btn1, btn5)
     
     bot.edit_message_text(chat_id=message.from_user.id,
@@ -199,7 +219,6 @@ def auto_trading_filters(message: types.CallbackQuery, bot : TeleBot):
                           parse_mode='HTML',
                           reply_markup=markup
                           )
-
 
 
 def portfolio(message: types.CallbackQuery, bot : TeleBot):  #todo DONE
@@ -432,9 +451,10 @@ def display_strategy_owner(message: types.CallbackQuery, bot : TeleBot):  #todo 
     print('Strategy_copy: ', strategy_name)
     data = return_owner_strat_id(strategy_name, owner_id, user_id)
     name = data['name'][1]
-    take_profit = data['take_profit'][1]
-    first_entry_grace = data['first_entry_grace'][1]
     entry_strategy = data['entry_strategy'][1]
+    take_profit = data['take_profit'][1]
+    close_trade = data['close_trade'][1]
+    stop_loss = data['stop_loss'][1]
     percentage = data['percentage'][1]
     fixed_usd_amount = data['fixed_usd_amount'][1]
     
@@ -452,7 +472,8 @@ def display_strategy_owner(message: types.CallbackQuery, bot : TeleBot):  #todo 
                           <strong> Strategy Owner Details: </strong> 
                           \nName: <strong>{name.upper()} </strong>
                           \nTake Profit: <strong>{take_profit.upper()} </strong> 
-                          \nFirst Entry Grace: <strong>{first_entry_grace.upper()} </strong> 
+                          \nFirst Entry Grace: <strong>{close_trade.upper()} </strong> 
+                          \nFirst Entry Grace: <strong>{stop_loss.upper()} </strong> 
                           \nEntry Strategy: <strong>{entry_strategy.upper()} </strong>
                         \nPercentage: <strong>{percentage.upper()} %</strong>
                         \nFixed Usd Amount: <strong>{fixed_usd_amount.upper()}$</strong>
@@ -469,24 +490,27 @@ def copie_strategy(message: types.CallbackQuery, bot : TeleBot):
     data = return_owner_strat_id(strategy_name, owner_id, user_id)
     # data = {'name': '', 'take_profit': '', 'first_entry_grace': '', 'entry_strategy': '', }
     name_id = data['name'][0]
-    take_profit_id = data['take_profit'][0]
-    first_entry_grace_id = data['first_entry_grace'][0]
     entry_strategy_id = data['entry_strategy'][0]
+    take_profit_id = data['take_profit'][0]
+    close_trade_on_take_profit_id = data['close_trade'][0]
+    stop_loss_time_id = data['stop_loss'][0]
     percentage = data['percentage'][0]
     fixed_usd_amount = data['fixed_usd_amount'][0]
     
     name = data['name'][1]
-    take_profit = data['take_profit'][1]
-    first_entry_grace = data['first_entry_grace'][1]
     entry_strategy = data['entry_strategy'][1]
+    take_profit = data['take_profit'][1]
+    close_trade_on_take_profit = data['close_trade'][1]
+    stop_loss_time = data['stop_loss'][1]
     percentage = data['percentage'][1]
     fixed_usd_amount = data['fixed_usd_amount'][1]
     
     copy_strategy(
         name_id,
         take_profit_id,
-        first_entry_grace_id,
         entry_strategy_id,
+        close_trade_on_take_profit_id,
+        stop_loss_time_id,
         percentage,
         fixed_usd_amount,
         user_id,
@@ -504,12 +528,50 @@ def copie_strategy(message: types.CallbackQuery, bot : TeleBot):
                           \n<strong>You have copied the strategy 🥳</strong>
                           
                           \nName: <strong>{name} </strong>
-                          \nTake Profit: <strong>{take_profit} </strong> 
-                          \nFirst Entry Grace: <strong>{first_entry_grace}</strong> 
                           \nEntry Strategy: <strong>{entry_strategy}</strong>
+                          \nTake Profit: <strong>{take_profit} </strong> 
+                          \nFirst Close Trade: <strong>{close_trade_on_take_profit}</strong> 
+                          \nFirst Stop Loss: <strong>{stop_loss_time}</strong> 
                         \nPercentage: <strong>{percentage.upper()} </strong>
                         \nFixed Usd Amount: <strong>{fixed_usd_amount.upper()}$</strong>
                         
                         ''',
                           parse_mode='HTML', reply_markup=markup
                         )
+    
+def Delete_strategy(message: types.CallbackQuery, bot : TeleBot):
+    owner_id = owner_toto
+    user_id = user_toto
+    markup = return_markup_delete(Strategy_owner, config.STRATEGIES, user_id, owner_id)
+    btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.OPTIMIZED_CONFIG_BTN)
+    btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
+    markup.add(btn1, btn5)
+    bot.edit_message_text(chat_id=message.from_user.id,
+                          message_id=message.message.message_id,
+                          text='CHOOSE STRATEGY ',
+                          parse_mode='HTML',
+                          reply_markup=markup
+                          )
+def End_delete_strategy(message: types.CallbackQuery, bot : TeleBot):
+    owner_id = owner_toto
+    user_id = user_toto
+    result = message.data.split('--')[1]
+    print('Result: ', result)
+    markup = types.InlineKeyboardMarkup()
+    btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.OPTIMIZED_CONFIG_BTN)
+    btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
+    markup.add(btn1, btn5)
+    if delete_strategy(result, owner_id):
+        bot.edit_message_text(chat_id=message.from_user.id,
+                            message_id=message.message.message_id,
+                            text=f'Strategy {result} was Deleted',
+                            parse_mode='HTML',
+                            reply_markup=markup
+                            )
+    else:
+        bot.edit_message_text(chat_id=message.from_user.id,
+                            message_id=message.message.message_id,
+                            text='Probleme Strategy not delete',
+                            parse_mode='HTML',
+                            reply_markup=markup
+                            )
