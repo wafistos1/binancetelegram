@@ -1,6 +1,9 @@
+import numbers
 from pony import orm
 from datetime import datetime
 from pony.orm import *
+
+
 
 
 
@@ -352,9 +355,28 @@ def delete_strategy(name, owner_id):
         return True
     except:
         return False
+    
+@db_session
+def update_strategy(name, element_table, value, owner_id):
+    try:
+        owner = orm.select(p for p in Memberships if p.id==owner_id ).first()
+        print(owner)
+        strategy = orm.select(p for p in Strategy_owner if p.name==name and p.Memberships==owner).first()
+        # print('Befor: ', strategy.take_profit.id)
+        # field = orm.select(p.id for p in element_table if p.number==value).first()
+        fields = orm.select(p.id for p in element_table if p.number==value)
+        for field in fields:
+            print('ID take profit',field)
+        # print('ID take profit',field)
+        strategy.take_profit = field
+        print(strategy.take_profit.number )
+        return True
+    except:
+        return False
+        
 if __name__=='__main__': 
     # print(check_user(1, 1))
-    print(delete_strategy('wafistos2', 1))
+    print(update_strategy('wafitos', Stop_loss_timeout, '1 minute', 1))
     # print(return_auto_trading(1))
     #pass
     # db.generate_mapping(create_tables=True)
