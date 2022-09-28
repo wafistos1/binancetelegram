@@ -633,6 +633,8 @@ def Second_update_strategy(message: types.CallbackQuery, bot : TeleBot):
     markup.add(btn9)
     
     
+    
+    
     btn2 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.OPTIMIZED_CONFIG_BTN)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     markup.add(btn1, btn2)
