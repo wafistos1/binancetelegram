@@ -34,6 +34,7 @@ from commands.command import (
     Update_strategy,
     Second_update_strategy,
     End_update_strategy,
+    update_element_strategy,
     )
 from telebot.storage import StateMemoryStorage
 from telebot.handler_backends import State, StatesGroup
@@ -112,8 +113,12 @@ bot.register_callback_query_handler(callback=Delete_strategy, pass_bot=True,  fu
 bot.register_callback_query_handler(callback=End_delete_strategy, pass_bot=True,  func=lambda message: message.data.startswith(f'delete-{config.STRATEGIES}'))
 bot.register_callback_query_handler(callback=Update_strategy, pass_bot=True,  func=lambda message: message.data.startswith(config.UPDATE_STRATEGY))
 bot.register_callback_query_handler(callback=Second_update_strategy, pass_bot=True,  func=lambda message: message.data.startswith(f'update-{config.SECOND_UPDATE}'))
-bot.register_callback_query_handler(callback=End_update_strategy, pass_bot=True,  func=lambda message: message.data.startswith(f'update-{config.STRATEGIES}'))
+bot.register_callback_query_handler(callback=update_element_strategy, pass_bot=True,  func=lambda message: message.data.startswith(f'{config.SECOND_UPDATE_STRATEGY}'))
 
+
+'''
+States
+'''
 # bot.register_message_handler(callback=descriptionState, state=adminPanelState.description, pass_bot=True)
 # bot.register_callback_query_handler(Strategy_take_profit_state, pass_bot=True, func=lambda message: message.data.startswith(f'state'), is_on=True)
 bot.register_callback_query_handler(Entry_strategy_state, pass_bot=True,  func=lambda message: message.data.startswith(f'state-{config.ENTRY_STRATEGY}'))

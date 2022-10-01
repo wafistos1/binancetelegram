@@ -43,7 +43,7 @@ PERCENTAGE_STATE = 'STATE PERCENTAGE'
 FIX_USD_STATE = 'STATE FIX USD AMOUNT'
 DELETE_STRATEGY = 'Delete stratgy owner'
 UPDATE_STRATEGY = 'Update stratgy owner'
-SECOND_UPDATE_STRATEGY = 'real_update stratgy owner'
+SECOND_UPDATE_STRATEGY = 'real_update_stratgy_owner'
 SECOND_UPDATE = 'second'
 # Start Messages
 TRADING_MESSAGE_START = '''

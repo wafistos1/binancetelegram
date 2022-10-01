@@ -215,6 +215,7 @@ def Amount_per_trade_strategy_percentage_state(message: types.Message, bot : Tel
         reply_markup=markup,
                  )
 
+
 def Amount_per_trade_strategy_fix_usd_state(message: types.Message, bot : TeleBot): #  Amount per Trade
     print('amount per fix')
     markup = types.InlineKeyboardMarkup(row_width=2)
@@ -283,3 +284,4 @@ def Strategy_final_state(message: types.Message, bot : TeleBot): #  Amount per T
                         parse_mode='HTML',
                         reply_markup=markup
                          )
+

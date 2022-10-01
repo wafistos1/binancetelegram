@@ -35,6 +35,7 @@ from database.data_pony import (
     copy_strategy,
     delete_strategy,
     update_strategy,
+    display_present_elem_strategy,
     )
 
 
@@ -109,6 +110,27 @@ def return_markup_update(table, back_btn, user_id, owner_id):
                 lis_btn.clear()
     return markup
 
+
+def return_markup_update_element(table, strategyname, stringStrategy, back_btn, owner_id):
+    table_numbers = return_table_value(table)
+    value = display_present_elem_strategy(strategyname, stringStrategy, owner_id)
+    print('Table max trade: ', table_numbers)
+    markup = types.InlineKeyboardMarkup()
+    lis_btn = []
+    for i, t in enumerate(table_numbers):
+        t = str(t)
+        if t == value:
+            btnt = types.InlineKeyboardButton(text=f'👉{t}👈', callback_data=f'{back_btn}-{t}')
+        else:
+            btnt = types.InlineKeyboardButton(text=t, callback_data=f'{back_btn}-{t}')
+        lis_btn.append(btnt)
+        if i % 2 :
+            markup.add(lis_btn[0], lis_btn[1])
+            lis_btn.clear()
+        elif i == len(table_numbers)-1:
+                markup.add(btnt)
+                lis_btn.clear()
+    return markup
 def _start(message, bot):
     print(message.data)
     user_id = user_toto
@@ -159,12 +181,12 @@ def optimised_config(message: types.Message, bot : TeleBot): # todo For owner fu
     
     markup = return_markup1(Strategy_owner, config.STRATEGIES, user_id, owner_id)
     btn8 = types.InlineKeyboardButton(text='Add New Strategy', callback_data=config.ADD_NEW_STRATEGY)
-    btn6 = types.InlineKeyboardButton(text='Delete Strategy', callback_data=config.DELETE_STRATEGY)
-    btn7 = types.InlineKeyboardButton(text='Update Strategy', callback_data=config.UPDATE_STRATEGY)
+    # btn6 = types.InlineKeyboardButton(text='Delete Strategy', callback_data=config.DELETE_STRATEGY)
+    # btn7 = types.InlineKeyboardButton(text='Update Strategy', callback_data=config.UPDATE_STRATEGY)
     btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.MAIN_MENU)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     
-    markup.add(btn6, btn7)
+    # markup.add(btn6, btn7)
     markup.add(btn8)
     markup.add(btn1, btn5)
     
@@ -482,9 +504,13 @@ def display_strategy_owner(message: types.CallbackQuery, bot : TeleBot):  #todo 
     
     btn6 = types.InlineKeyboardButton(text=f'Copy-{strategy_name}', callback_data=f'Cp-strategy--{strategy_name}')
     btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.OPTIMIZED_CONFIG_BTN)
+    btn8 = types.InlineKeyboardButton(text='Delete Strategy', callback_data=f'delete-{config.STRATEGIES}--{strategy_name}')
+    btn7 = types.InlineKeyboardButton(text='Update Strategy', callback_data= f'update-{config.SECOND_UPDATE}--{strategy_name}')
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     markup.add(btn6)
+    markup.add(btn7, btn8)
     markup.add(btn1, btn5)
+    
     bot.edit_message_text(chat_id=message.from_user.id,
                           message_id=message.message.message_id,
                           text= f'''
@@ -558,7 +584,8 @@ def copie_strategy(message: types.CallbackQuery, bot : TeleBot):
                         ''',
                           parse_mode='HTML', reply_markup=markup
                         )
-    
+
+ 
 def Delete_strategy(message: types.CallbackQuery, bot : TeleBot):
     owner_id = owner_toto
     user_id = user_toto
@@ -620,21 +647,16 @@ def Second_update_strategy(message: types.CallbackQuery, bot : TeleBot):
     result = message.data.split('--')[1]
     print('Result: ', result)
     markup = types.InlineKeyboardMarkup()
-    btn3 = types.InlineKeyboardButton(text='Entry_Strategy', callback_data=f'{config.SECOND_UPDATE_STRATEGY}-Entry_Strategy')
-    btn4 = types.InlineKeyboardButton(text='Take_Profit', callback_data=f'{config.SECOND_UPDATE_STRATEGY}-Take_Profit')
-    btn5 = types.InlineKeyboardButton(text='First_Entry', callback_data=f'{config.SECOND_UPDATE_STRATEGY}-First_Entry')
-    btn6 = types.InlineKeyboardButton(text='Close_Trade', callback_data=f'{config.SECOND_UPDATE_STRATEGY}-Close_Trade')
-    btn7 = types.InlineKeyboardButton(text='Stop_loss_Time', callback_data=f'{config.SECOND_UPDATE_STRATEGY}-Stop_loss_Time')
-    btn8 = types.InlineKeyboardButton(text='Percentage', callback_data=f'{config.SECOND_UPDATE_STRATEGY}-Percentage')
-    btn9 = types.InlineKeyboardButton(text='Fixed_Usd_Amount', callback_data=f'{config.SECOND_UPDATE_STRATEGY}-Fixed_Usd_Amount')
+    btn3 = types.InlineKeyboardButton(text='Entry_Strategy', callback_data=f'{config.SECOND_UPDATE_STRATEGY}--Entry_strategy--{result}')
+    btn4 = types.InlineKeyboardButton(text='Take_Profit', callback_data=f'{config.SECOND_UPDATE_STRATEGY}--Take_profit_strategy--{result}')
+    btn6 = types.InlineKeyboardButton(text='Close_Trade', callback_data=f'{config.SECOND_UPDATE_STRATEGY}--Close_trade_on_take_profit--{result}')
+    btn7 = types.InlineKeyboardButton(text='Stop_loss_Time', callback_data=f'{config.SECOND_UPDATE_STRATEGY}--Stop_loss_timeout--{result}')
+    btn8 = types.InlineKeyboardButton(text='Percentage', callback_data=f'{config.SECOND_UPDATE_STRATEGY}--Percentage--{result}')
+    btn9 = types.InlineKeyboardButton(text='Fixed_Usd_Amount', callback_data=f'{config.SECOND_UPDATE_STRATEGY}--Fixed_usd_amount--{result}')
     markup.add(btn3, btn4)
-    markup.add(btn5, btn6)
-    markup.add(btn7, btn8)
-    markup.add(btn9)
-    
-    
-    
-    
+    markup.add(btn7, btn6)
+    markup.add(btn8, btn9)
+
     btn2 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.OPTIMIZED_CONFIG_BTN)
     btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
     markup.add(btn1, btn2)
@@ -662,6 +684,8 @@ def Second_update_strategy(message: types.CallbackQuery, bot : TeleBot):
                         parse_mode='HTML', 
                         reply_markup=markup
                     )
+    
+
 def End_update_strategy(message: types.CallbackQuery, bot : TeleBot):
     owner_id = owner_toto
     user_id = user_toto
@@ -685,3 +709,34 @@ def End_update_strategy(message: types.CallbackQuery, bot : TeleBot):
                             parse_mode='HTML',
                             reply_markup=markup
                             )
+        
+
+
+'''
+return_markup_update_element(table, strategyname, stringStrategy, back_btn, owner_id):
+''' 
+def update_element_strategy(message: types.CallbackQuery, bot : TeleBot):
+    owner_id = owner_toto
+    user_id = user_toto
+    check = {
+        'Take_profit_strategy': Take_profit_strategy,
+        'Entry_strategy': Entry_strategy,
+        'Stop_loss_timeout': Stop_loss_timeout,
+        'Close_trade_on_take_profit': Close_trade_on_take_profit,
+        'Percentage': Percentage,
+        'Fixed_usd_amount': Fixed_usd_amount,
+    }
+    result = message.data.split('--')[1]
+    result1 = message.data.split('--')[2]
+    print(result, result1)
+    markup = return_markup_update_element(check[result], result1, result, 'toto', owner_id)
+    # markup = types.InlineKeyboardMarkup()
+    btn5 = types.InlineKeyboardButton(text=config.BACK, callback_data=config.OPTIMIZED_CONFIG_BTN)
+    btn1 = types.InlineKeyboardButton(text=config.MAIN_MENU, callback_data=config.MAIN_MENU,)
+    markup.add(btn1, btn5)
+    bot.edit_message_text(chat_id=message.from_user.id,
+                    message_id=message.message.message_id,
+                    text=f'test',
+                    parse_mode='HTML',
+                    reply_markup=markup,
+                    )

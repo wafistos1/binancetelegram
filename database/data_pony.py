@@ -344,6 +344,7 @@ def save_strategy(name,
         amount_per_trade=create_amount,
         Memberships=user_id,
         )
+
 @db_session
 def delete_strategy(name, owner_id):
     try:
@@ -373,10 +374,34 @@ def update_strategy(name, element_table, value, owner_id):
         return True
     except:
         return False
+    
+@db_session
+def display_present_elem_strategy(strategyname, namelement, owner_id):
+    print('Name: ', namelement)
+    owner = orm.select(p for p in Memberships if p.id==owner_id ).first()
+    print(owner)
+    strategy = orm.select(p for p in Strategy_owner if p.name== strategyname and p.Memberships==owner).first()
+    print(strategy)
+    if namelement == 'Entry_strategy':
+        element = strategy.entry_strategy.number
+    elif namelement == 'Take_profit_strategy':
+        element = strategy.take_profit.number
+    elif namelement == 'Stop_loss_timeout':
+        element = strategy.stop_loss_time.number
+    elif namelement == 'Close_trade_on_take_profit':
+        element = strategy.close_trade_on_take_profit.number
+    elif namelement == 'Percentage':
+        element = strategy.amount_per_trade.percentage.number
+    elif namelement == 'Fixed_usd_amount':
+        element = strategy.amount_per_trade.fixed_usd_amount.number
+    return element
+
+
         
 if __name__=='__main__': 
     # print(check_user(1, 1))
-    print(update_strategy('wafitos', Stop_loss_timeout, '1 minute', 1))
+    #Stop_loss_timeout
+    print(return_table_value(Take_profit_strategy))
     # print(return_auto_trading(1))
     #pass
     # db.generate_mapping(create_tables=True)
